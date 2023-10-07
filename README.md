@@ -6,4 +6,5 @@
 - PostgreSQL 14.7
 - node.js 18.14.0
 ## ER図
-![Alt text](el_drawio_-_draw_io-2.png)
+![el_drawio_-_draw_io-2](https://github.com/keiz1213/task_manage/assets/72614612/b59ee9d1-25ae-4837-a59e-8c90f8ddb8bf)
+

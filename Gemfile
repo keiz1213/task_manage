@@ -67,3 +67,6 @@ group :test do
   gem "selenium-webdriver"
 
 end
+
+gem "slim-rails"
+gem "html2slim"

@@ -1,12 +1,12 @@
 class Task < ApplicationRecord
   validates :title, presence: true, length: { maximum: 30 }
-  validates :priority, presence: true, inclusion: { in: 0..2 }
+  validates :priority, presence: true
   validates :deadline, presence: true
-  validates :state, presence: true, inclusion: { in: 0..2 }
+  validates :state, presence: true
   validate :deadline_must_be_in_the_future
 
-  enum :priority, { low: 0, mid: 1, high: 2 }
-  enum :state, { not_started: 0, in_progress: 1, done: 2 }
+  enum :priority, { low: 0, mid: 1, high: 2 }, validate: true
+  enum :state, { not_started: 0, in_progress: 1, done: 2 }, validate: true
 
   private
 

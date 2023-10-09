@@ -14,16 +14,16 @@ h1 tasks#new!
     <br>
     .form-check.form-check-inline
       = f.label :priority, 'low', class: 'form-check-label'
-      = f.radio_button :priority, 0, checked: true, class: 'form-check-input', id: 'task_priority_low'
+      = f.radio_button :priority, 'low', checked: true, class: 'form-check-input', id: 'task_priority_low'
     .form-check.form-check-inline
       = f.label :priority, 'mid', class: 'form-check-label'
-      = f.radio_button :priority, 1, class: 'form-check-input', id: 'task_priority_mid'
+      = f.radio_button :priority, 'mid', class: 'form-check-input', id: 'task_priority_mid'
     .form-check.form-check-inline
       = f.label :priority, 'high', class: 'form-check-label'
-      = f.radio_button :priority, 2, class: 'form-check-input', id: 'task_priority_high'
+      = f.radio_button :priority, 'high', class: 'form-check-input', id: 'task_priority_high'
   .form-group.mb-3
     = f.label :deadline, class: 'control-label'
     <br>
     = f.datetime_local_field :deadline, class: 'form-control', id: 'task_deadline'
-  = f.hidden_field :state, value: 0
+  = f.hidden_field :state, value: 'not_started'
   = f.submit nil, class: 'btn btn-primary'

@@ -1,4 +1,8 @@
-.row.py-2.border-top
-  .col-4.my-auto
-    span
-      = task.title
+.card.my-3
+  .card-header
+    .d-flex.justify-content-between
+      span = task.title
+      span = task.priority
+  .card-body
+    p = "ステータス: " + task.state
+    p = "期限: " + task.deadline.to_s

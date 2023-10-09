@@ -1,9 +1,26 @@
 .nav
   = link_to '一覧', tasks_path, class: 'nav-link'
-.card
-  .card-body
-    h3.card-title = @task.title
-    p.card-text = @task.description
-    p.card-text = "締め切り: " + @task.deadline.to_s
-    p.card-text = "優先順位: " + @task.priority
-    p.card-text = "ステータス: " + @task.state
+
+  table.table
+    tbody
+      tr
+        th タイトル
+        td = @task.title
+      tr
+        th 説明
+        td = simple_format(h(@task.description), {}, sanitaize: false )
+      tr
+        th 優先順位
+        td = @task.priority
+      tr
+        th 締め切り
+        td = @task.deadline
+      tr
+        th ステータス
+        td = @task.state
+      tr
+        th 登録日時
+        td = @task.created_at
+      tr
+        th 更新日時
+        td = @task.updated_at

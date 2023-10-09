@@ -6,3 +6,4 @@
   .card-body
     p = "ステータス: " + task.state
     p = "期限: " + task.deadline.to_s
+    = link_to '編集', edit_task_path(task), class: 'btn btn-primary'

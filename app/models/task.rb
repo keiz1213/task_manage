@@ -5,6 +5,9 @@ class Task < ApplicationRecord
   validates :state, presence: true, inclusion: { in: 0..2 }
   validate :deadline_must_be_in_the_future
 
+  enum :priority, { low: 0, mid: 1, high: 2 }
+  enum :state, { not_started: 0, in_progress: 1, done: 2 }
+
   private
 
   def deadline_must_be_in_the_future

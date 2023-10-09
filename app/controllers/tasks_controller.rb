@@ -17,6 +17,10 @@ class TasksController < ApplicationController
     redirect_to tasks_url, notice: "タスク: #{task.title}を登録しました"
   end
 
+  def edit
+    @task = Task.find(params[:id])
+  end
+
   private
 
   def task_params

@@ -3,10 +3,27 @@ h1 tasks#new!
 .nav
   = link_to '一覧', tasks_path, class: 'nav-link'
 = form_with model: @task do |f|
-  .form-group
-    = f.label :name
-    = f.text_field :name, class: 'form-control', id: 'task_name'
-  .form-group
+  .form-group.mb-3
+    = f.label :title
+    = f.text_field :title, class: 'form-control', id: 'task_name'
+  .form-group.mb-3
     = f.label :description
     = f.text_area :description, rows: 5, class: 'form-control', id: 'task_discription'
+  .form-group.mb-3
+    = f.label :priority
+    <br>
+    .form-check.form-check-inline
+      = f.label :priority, 'low', class: 'form-check-label'
+      = f.radio_button :priority, 0, checked: true, class: 'form-check-input'
+    .form-check.form-check-inline
+      = f.label :priority, 'mid', class: 'form-check-label'
+      = f.radio_button :priority, 1, class: 'form-check-input'
+    .form-check.form-check-inline
+      = f.label :priority, 'high', class: 'form-check-label'
+      = f.radio_button :priority, 2, class: 'form-check-input'
+  .form-group.mb-3
+    = f.label :deadline, class: 'control-label'
+    <br>
+    = f.datetime_local_field :deadline, class: 'form-control'
+  = f.hidden_field :state, value: 0
   = f.submit nil, class: 'btn btn-primary'

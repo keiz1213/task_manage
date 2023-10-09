@@ -19,9 +19,9 @@ class TasksController < ApplicationController
     @task = Task.new(task_params)
 
     if @task.save
-      redirect_to tasks_path, notice: "タスク: #{task.title}を作成しました"
+      redirect_to tasks_path, notice: "タスク: #{@task.title}を作成しました"
     else
-      render :new
+      render :new, status: :unprocessable_entity
     end
   end
 

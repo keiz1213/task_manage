@@ -1,7 +1,7 @@
 .card.my-3
   .card-header
     .d-flex.justify-content-between
-      span = task.title
+      span = link_to task.title, task
       span = task.priority
   .card-body
     p = "ステータス: " + task.state

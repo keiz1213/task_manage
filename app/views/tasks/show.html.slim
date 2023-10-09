@@ -1,0 +1,9 @@
+.nav
+  = link_to '一覧', tasks_path, class: 'nav-link'
+.card
+  .card-body
+    h3.card-title = @task.title
+    p.card-text = @task.description
+    p.card-text = "締め切り: " + @task.deadline.to_s
+    p.card-text = "優先順位: " + @task.priority
+    p.card-text = "ステータス: " + @task.state

@@ -1,5 +1,5 @@
 class TasksController < ApplicationController
-  before_action :set_task, only: %i[ show edit update destroy ]
+  before_action :set_task, only: %i[show edit update destroy]
 
   def index
     @tasks = Task.all
@@ -26,7 +26,6 @@ class TasksController < ApplicationController
   end
 
   def update
-
     if @task.update(task_params)
       redirect_to tasks_path, notice: "タスク: #{@task.title}を更新しました"
     else

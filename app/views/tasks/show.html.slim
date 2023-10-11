@@ -17,7 +17,7 @@
         td = @task.deadline
       tr
         th ステータス
-        td = @task.state
+        td = t("activerecord.attributes.task.states.#{@task.state}")
       tr
         th 登録日時
         td = @task.created_at

@@ -6,21 +6,21 @@
 = form_with model: task do |f|
   .form-group.mb-3
     = f.label :title
-    = f.text_field :title, class: 'form-control', id: 'task_name'
+    = f.text_field :title, class: 'form-control'
   .form-group.mb-3
     = f.label :description
-    = f.text_area :description, rows: 5, class: 'form-control', id: 'task_discription'
+    = f.text_area :description, rows: 5, class: 'form-control'
   .form-group.mb-3
     = f.label :priority
     <br>
     .form-check.form-check-inline
-      = f.label :priority, 'low', class: 'form-check-label'
+      = f.label :priority, 'low', class: 'form-check-label', for: 'task_priority_low'
       = f.radio_button :priority, 'low', checked: true, class: 'form-check-input', id: 'task_priority_low'
     .form-check.form-check-inline
-      = f.label :priority, 'mid', class: 'form-check-label'
+      = f.label :priority, 'mid', class: 'form-check-label', for: 'task_priority_mid'
       = f.radio_button :priority, 'mid', class: 'form-check-input', id: 'task_priority_mid'
     .form-check.form-check-inline
-      = f.label :priority, 'high', class: 'form-check-label'
+      = f.label :priority, 'high', class: 'form-check-label', for: 'task_priority_high'
       = f.radio_button :priority, 'high', class: 'form-check-input', id: 'task_priority_high'
   .form-group.mb-3
     = f.label :deadline, class: 'control-label'

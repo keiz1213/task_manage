@@ -1,8 +1,8 @@
 require 'rails_helper'
 
-RSpec.describe "Tasks", type: :system do
+RSpec.describe "Tasks" do
   describe 'タスクのCRUD' do
-    let!(:task) { FactoryBot.create(:task) }
+    let!(:task) { create(:task) }
 
     it 'タスクの作成' do
       visit root_path
@@ -12,7 +12,7 @@ RSpec.describe "Tasks", type: :system do
         fill_in 'Title', with: 'test-task'
         fill_in 'Description', with: 'test'
         choose 'mid'
-        fill_in 'Deadline', with: Time.mktime(2100,1,2,3,4)
+        fill_in 'Deadline', with: Time.mktime(2100, 1, 2, 3, 4)
         click_button 'Create Task'
 
         expect(page).to have_content('タスク: test-taskを作成しました')
@@ -43,7 +43,7 @@ RSpec.describe "Tasks", type: :system do
         click_link '編集'
         fill_in 'Title', with: 'foo'
         choose 'high'
-        fill_in 'Deadline', with: Time.mktime(2200,1,2,3,4)
+        fill_in 'Deadline', with: Time.mktime(2200, 1, 2, 3, 4)
         click_button 'Update Task'
         expect(page).to have_content('foo')
         expect(page).to have_content('タスク: fooを更新しました')

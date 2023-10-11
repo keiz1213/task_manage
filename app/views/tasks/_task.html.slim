@@ -2,7 +2,7 @@
   .card-header
     .d-flex.justify-content-between
       span = link_to task.title, task
-      span = task.priority
+      span = '重要度: ' + t("activerecord.attributes.task.priorities.#{task.priority}")
   .card-body
     p = "ステータス: " + task.state
     p = "期限: " + task.deadline.to_s

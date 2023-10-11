@@ -14,13 +14,13 @@
     = f.label :priority
     <br>
     .form-check.form-check-inline
-      = f.label :priority, 'low', class: 'form-check-label', for: 'task_priority_low'
+      = f.label :priority, t("activerecord.attributes.task.priorities.low"), class: 'form-check-label', for: 'task_priority_low'
       = f.radio_button :priority, 'low', checked: true, class: 'form-check-input', id: 'task_priority_low'
     .form-check.form-check-inline
-      = f.label :priority, 'mid', class: 'form-check-label', for: 'task_priority_mid'
+      = f.label :priority, t("activerecord.attributes.task.priorities.mid"), class: 'form-check-label', for: 'task_priority_mid'
       = f.radio_button :priority, 'mid', class: 'form-check-input', id: 'task_priority_mid'
     .form-check.form-check-inline
-      = f.label :priority, 'high', class: 'form-check-label', for: 'task_priority_high'
+      = f.label :priority, t("activerecord.attributes.task.priorities.high"), class: 'form-check-label', for: 'task_priority_high'
       = f.radio_button :priority, 'high', class: 'form-check-input', id: 'task_priority_high'
   .form-group.mb-3
     = f.label :deadline, class: 'control-label'

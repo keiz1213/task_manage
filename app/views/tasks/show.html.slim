@@ -11,7 +11,7 @@
         td = simple_format(h(@task.description), {}, sanitaize: false )
       tr
         th 優先順位
-        td = @task.priority
+        td = t("activerecord.attributes.task.priorities.#{@task.priority}")
       tr
         th 締め切り
         td = @task.deadline

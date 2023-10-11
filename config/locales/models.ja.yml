@@ -1,0 +1,19 @@
+ja:
+  activerecord:
+    models:
+      task: タスク
+    attributes:
+      task:
+        title: タイトル
+        description: 説明
+        priority: 重要度
+        priorities:
+          low: 低
+          mid: 中
+          high: 高
+        deadline: 締め切り
+        state: ステータス
+        states:
+          not_started: 未着手
+          in_progress: 着手
+          done: 完了

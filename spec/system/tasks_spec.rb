@@ -23,6 +23,17 @@ RSpec.describe "Tasks" do
       }.to change(Task, :count).by(1)
     end
 
+    it 'タスクの一覧が作成日の降順で表示される' do
+      yesterday_task = create(:task, title: 'yesterday_task', created_at: Time.current.ago(1.day))
+      day_before_yesterday_task = create(:task, title: 'day_before_yesterday_task', created_at: Time.current.ago(2.days))
+      visit root_path
+
+      titles = page.text.scan(/(#{task.title}|#{yesterday_task.title}|#{day_before_yesterday_task.title})/)
+      expect(titles[0][0]).to eq task.title
+      expect(titles[1][0]).to eq yesterday_task.title
+      expect(titles[2][0]).to eq day_before_yesterday_task.title
+    end
+
     it 'タスクの詳細' do
       visit root_path
 

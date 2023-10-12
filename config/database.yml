@@ -84,3 +84,4 @@ production:
   database: task_manage_production
   username: task_manage
   password: <%= ENV["TASK_MANAGE_DATABASE_PASSWORD"] %>
+  url: <%= ENV['DATABASE_URL'] %>

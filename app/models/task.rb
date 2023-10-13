@@ -9,6 +9,8 @@ class Task < ApplicationRecord
   enum :state, { not_started: 0, in_progress: 1, done: 2 }, validate: true
 
   scope :recent, -> { order(created_at: :desc) }
+  scope :deadline, -> { order(deadline: :asc) }
+
   private
 
   def deadline_must_be_in_the_future

@@ -89,7 +89,7 @@ RSpec.describe "Tasks" do
       visit root_path
       click_link '締切が近い順'
 
-      # ※設定ファイル→spec/support/wait_for_css
+      # 設定ファイル: spec/support/wait_for_css
       # 参考: https://qiita.com/johnslith/items/09bb0e5257e06a4bd948
       wait_for_css_appear('.card-header') do
         titles = page.text.scan(/(#{due_tomorrow_task_title}|#{due_day_after_tomorrow_task_title}|#{due_two_days_after_tomorrow_task_title})/)

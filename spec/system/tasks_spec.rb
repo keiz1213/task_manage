@@ -24,8 +24,8 @@ RSpec.describe "Tasks" do
     end
 
     it 'タスクの一覧が作成日の降順で表示される' do
-      yesterday_task = create(:task, title: 'yesterday_task', created_at: Time.current.ago(1.day))
-      day_before_yesterday_task = create(:task, title: 'day_before_yesterday_task', created_at: Time.current.ago(2.days))
+      yesterday_task = create(:task, :yesterday_task)
+      day_before_yesterday_task = create(:task, :day_before_yesterday_task)
       visit root_path
 
       titles = page.text.scan(/(#{task.title}|#{yesterday_task.title}|#{day_before_yesterday_task.title})/)

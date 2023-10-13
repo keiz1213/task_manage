@@ -13,9 +13,9 @@ RSpec.describe TaskSort do
   end
 
   it '締め切りに近い順にソートできる' do
-    task1 = create(:task, deadline: Time.current.since(1.day))
-    task2 = create(:task, deadline: Time.current.since(3.days))
-    task3 = create(:task, deadline: Time.current.since(2.days))
+    task1 = create(:task, :due_tomorrow_task)
+    task2 = create(:task, :due_two_days_after_tomorrow_task)
+    task3 = create(:task, :due_day_after_tomorrow_task)
     sort_task = build(:task_sort, :sort_by_deadline)
 
     expect(sort_task.result[0]).to eq task1

@@ -78,4 +78,19 @@ RSpec.describe "Tasks" do
       }.to change(Task, :count).by(-1)
     end
   end
+
+  describe 'ソート' do
+    it '締切に近い順に並び替える' do
+      due_tomorrow_task = create(:task, :due_tomorrow_task)
+      due_two_days_after_tomorrow_task = create(:task, :due_two_days_after_tomorrow_task)
+      due_day_after_tomorrow_task = create(:task, :due_day_after_tomorrow_task)
+
+      visit root_path
+      click_link '締切が近い順'
+      titles = page.text.scan(/(#{due_tomorrow_task.title}|#{due_day_after_tomorrow_task.title}|#{due_two_days_after_tomorrow_task.title})/)
+      expect(titles[0][0]).to eq due_tomorrow_task.title
+      expect(titles[1][0]).to eq due_day_after_tomorrow_task.title
+      expect(titles[2][0]).to eq due_two_days_after_tomorrow_task.title
+    end
+  end
 end

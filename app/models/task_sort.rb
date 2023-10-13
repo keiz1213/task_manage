@@ -4,7 +4,12 @@ class TaskSort
 
   attribute :sort_by, :string
 
-  def sort
-    sort_by == 'deadline' ? Task.deadline : Task.recent
+  def result
+    case sort_by
+    when 'deadline'
+      Task.deadline
+    else
+      Task.recent
+    end
   end
 end

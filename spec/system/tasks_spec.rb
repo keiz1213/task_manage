@@ -72,7 +72,6 @@ RSpec.describe "Tasks" do
     it 'タスクの削除' do
       task = create(:task)
       visit root_path
-      click_link task.title
 
       expect {
         accept_confirm do
@@ -169,6 +168,47 @@ RSpec.describe "Tasks" do
           expect(task_titles[1].text).to eq 'メロン'
           expect(task_titles[2].text).to eq 'りんごちゃん'
         end
+      end
+    end
+  end
+
+  describe 'タスクのステータス更新' do
+    context '現在のステータスが「未着手」の時' do
+      it 'ステータスが「着手」に更新される' do
+        task = create(:task)
+
+        visit root_path
+        expect(find(:test, 'update-state').value).to eq 'ステータス: 未着手'
+        click_button 'ステータス: 未着手'
+        # TODO
+        sleep(2)
+        expect(find(:test, 'update-state').value).to eq 'ステータス: 着手'
+      end
+    end
+
+    context '現在のステータスが「着手」の時' do
+      it 'ステータスが「完了」に更新される' do
+        task = create(:task, state: 'in_progress')
+
+        visit root_path
+        expect(find(:test, 'update-state').value).to eq 'ステータス: 着手'
+        click_button 'ステータス: 着手'
+        # TODO
+        sleep(2)
+        expect(find(:test, 'update-state').value).to eq 'ステータス: 完了'
+      end
+    end
+
+    context '現在のステータスが「完了」の時' do
+      it 'ステータスが「未着手」に更新される' do
+        task = create(:task, state: 'done')
+
+        visit root_path
+        expect(find(:test, 'update-state').value).to eq 'ステータス: 完了'
+        click_button 'ステータス: 完了'
+        # TODO
+        sleep(2)
+        expect(find(:test, 'update-state').value).to eq 'ステータス: 未着手'
       end
     end
   end

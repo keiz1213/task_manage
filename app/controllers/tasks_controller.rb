@@ -2,8 +2,8 @@ class TasksController < ApplicationController
   before_action :set_task, only: %i[show edit update destroy]
 
   def index
-    task_sort = TaskSort.new(sort_params)
-    @tasks = task_sort.result
+    @search_form = TaskSearchForm.new(search_params)
+    @tasks = @search_form.search
   end
 
   def show
@@ -49,7 +49,7 @@ class TasksController < ApplicationController
     params.require(:task).permit(:title, :description, :priority, :deadline, :state)
   end
 
-  def sort_params
-    params[:sort].present? ? params.require(:sort).permit(:sort_by) : {}
+  def search_params
+    params[:search].present? ? params.require(:search).permit(:keyword, :sort_by) : {}
   end
 end

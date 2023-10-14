@@ -1,7 +1,7 @@
 .card.my-3
   .card-header
     .d-flex.justify-content-between
-      span = link_to task.title, task
+      span = link_to task.title, task, data: { test: 'task-title' }
       span = '重要度: ' + t("activerecord.attributes.task.priorities.#{task.priority}")
   .card-body
     p = "ステータス: " + t("activerecord.attributes.task.states.#{task.state}")

@@ -1,11 +1,11 @@
 h1 tasks#index!
-
 = link_to '新規タスク', new_task_path, class: 'btn btn-primary'
-
 .container
+  = render partial: 'search_form', locals: { search_form: @search_form }
+.container data-test="task-list"
   .d-flex.justify-content-end
     .nav
-      li.navitem = link_to '締切が近い順', tasks_path(sort: {sort_by: 'deadline'}), method: 'get', class: 'nav-link'
+      li.navitem = link_to '締切が近い順', tasks_path(search: { keyword: @search_form.keyword, sort_by: 'deadline', }), method: 'get', class: 'nav-link'
       li.navitem = link_to 'リセット', tasks_path, method: 'get', class: 'nav-link'
   - @tasks.each do |task|
     = render partial: 'task', locals: { task: task }

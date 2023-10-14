@@ -7,3 +7,7 @@ RSpec.configure do |config|
     end
   end
 end
+
+Capybara.add_selector(:test) do
+  css { |val| %([data-test=#{val}]) }
+end

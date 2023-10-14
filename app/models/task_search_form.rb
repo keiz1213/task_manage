@@ -4,7 +4,7 @@ class TaskSearchForm
 
   attribute :sort_by, :string
   attribute :keyword, :string
-  attribute :priority, :string
+  attribute :state, :string
 
   def sort_task
     case sort_by
@@ -15,8 +15,8 @@ class TaskSearchForm
     end
   end
 
-  def narrow_down_by_priority(sorted_tasks)
-    case priority
+  def narrow_down_by_state(sorted_tasks)
+    case state
     when 'not_started'
       sorted_tasks.not_started
     when 'in_progress'
@@ -29,7 +29,7 @@ class TaskSearchForm
   def search
     sorted_tasks = sort_task
     sorted_tasks = sorted_tasks.matches(keyword) if keyword.present?
-    sorted_tasks = narrow_down_by_priority(sorted_tasks) if priority.present?
+    sorted_tasks = narrow_down_by_state(sorted_tasks) if state.present?
     sorted_tasks
   end
 end

@@ -5,10 +5,10 @@ h1 tasks#index!
 .container data-test="task-list"
   .d-flex.justify-content-end
     .nav
-      li.navitem = link_to '未着手のタスク', tasks_path(search: { keyword: @search_form.keyword, sort_by: @search_form.sort_by, priority: 'not_started' }), method: 'get', class: 'nav-link'
-      li.navitem = link_to '着手しているのタスク', tasks_path(search: { keyword: @search_form.keyword, sort_by: @search_form.sort_by, priority: 'in_progress' }), method: 'get', class: 'nav-link'
-      li.navitem = link_to '完了したタスク', tasks_path(search: { keyword: @search_form.keyword, sort_by: @search_form.sort_by, priority: 'done' }), method: 'get', class: 'nav-link'
-      li.navitem = link_to '締切が近い順', tasks_path(search: { keyword: @search_form.keyword, sort_by: 'deadline', priority: @search_form.priority }), method: 'get', class: 'nav-link'
+      li.navitem = link_to '未着手のタスク', tasks_path(search: { keyword: @search_form.keyword, sort_by: @search_form.sort_by, state: 'not_started' }), method: 'get', class: 'nav-link'
+      li.navitem = link_to '着手しているのタスク', tasks_path(search: { keyword: @search_form.keyword, sort_by: @search_form.sort_by, state: 'in_progress' }), method: 'get', class: 'nav-link'
+      li.navitem = link_to '完了したタスク', tasks_path(search: { keyword: @search_form.keyword, sort_by: @search_form.sort_by, state: 'done' }), method: 'get', class: 'nav-link'
+      li.navitem = link_to '締切が近い順', tasks_path(search: { keyword: @search_form.keyword, sort_by: 'deadline', state: @search_form.state }), method: 'get', class: 'nav-link'
       li.navitem = link_to 'リセット', tasks_path, method: 'get', class: 'nav-link'
   - @tasks.each do |task|
     = render partial: 'task', locals: { task: task }

@@ -11,7 +11,7 @@ class Task < ApplicationRecord
   scope :recent, -> { order(created_at: :desc) }
   scope :deadline, -> { order(deadline: :asc) }
   scope :matches, ->(keyword) {
-                    where("title LIKE ?", "%#{ActiveRecord::Base.sanitize_sql_like(keyword)}%").or(where("description LIKE ?", "%#{ActiveRecord::Base.sanitize_sql_like(keyword)}%"))
+                    where("title LIKE ?", "%#{sanitize_sql_like(keyword)}%").or(where("description LIKE ?", "%#{sanitize_sql_like(keyword)}%"))
                   }
 
   private

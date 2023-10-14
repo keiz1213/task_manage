@@ -2,8 +2,6 @@ require 'rails_helper'
 
 RSpec.describe "Tasks" do
   describe 'タスクのCRUD' do
-    let!(:task) { create(:task) }
-
     it 'タスクの作成' do
       visit root_path
 
@@ -18,13 +16,13 @@ RSpec.describe "Tasks" do
         expect(page).to have_content('tasks#index!')
         expect(page).to have_content('test-task')
         expect(page).to have_content('重要度: 中')
-        expect(page).to have_content('ステータス: 未着手')
+        expect(page.find(:test, 'update-state').value).to eq 'ステータス: 未着手'
         expect(page).to have_content("締め切り: 2100/01/02 03:04")
       }.to change(Task, :count).by(1)
     end
 
     it 'タスクの一覧が作成日の降順で表示される' do
-      today_task_title = task.title
+      today_task_title = create(:task).title
       yesterday_task_title = create(:task, :yesterday_task).title
       day_before_yesterday_task_title = create(:task, :day_before_yesterday_task).title
       visit root_path
@@ -39,8 +37,9 @@ RSpec.describe "Tasks" do
     end
 
     it 'タスクの詳細' do
-      visit root_path
+      task = create(:task)
 
+      visit root_path
       click_link task.title
       expect(page).to have_content(task.title)
       expect(page).to have_content(task.description)
@@ -50,6 +49,7 @@ RSpec.describe "Tasks" do
     end
 
     it 'タスクの更新' do
+      task = create(:task)
       visit root_path
 
       expect {
@@ -64,16 +64,17 @@ RSpec.describe "Tasks" do
         expect(page).to have_content('tasks#index!')
         expect(page).to have_content('foo')
         expect(page).to have_content('重要度: 高')
-        expect(page).to have_content('ステータス: 未着手')
+        expect(page.find(:test, 'update-state').value).to eq 'ステータス: 未着手'
         expect(page).to have_content('締め切り: 2200/01/02 03:04')
       }.not_to change(Task, :count)
     end
 
     it 'タスクの削除' do
+      task = create(:task)
       visit root_path
+      click_link task.title
 
       expect {
-        click_link task.title
         accept_confirm do
           click_link '削除'
         end
@@ -94,7 +95,7 @@ RSpec.describe "Tasks" do
 
       # 設定ファイル: spec/support/wait_for_css
       # 参考: https://qiita.com/johnslith/items/09bb0e5257e06a4bd948
-      wait_for_css_appear('.card') do
+      wait_for_css_appear('.task-card') do
         within(:test, 'task-list') do
           task_titles = all(:test, 'task-title')
           expect(task_titles.count).to be 3
@@ -117,7 +118,7 @@ RSpec.describe "Tasks" do
       visit root_path
       fill_in 'キーワード', with: 'りんご'
       click_button '検索する'
-      wait_for_css_appear('.card') do
+      wait_for_css_appear('.task-card') do
         within(:test, 'task-list') do
           task_titles = all(:test, 'task-title')
           expect(task_titles.count).to be 2
@@ -138,7 +139,7 @@ RSpec.describe "Tasks" do
       visit root_path
       fill_in 'キーワード', with: '桃'
       click_button '検索する'
-      wait_for_css_appear('.card') do
+      wait_for_css_appear('.task-card') do
         task_titles = []
         within(:test, 'task-list') do
           task_titles = all(:test, 'task-title')
@@ -160,7 +161,7 @@ RSpec.describe "Tasks" do
       fill_in 'キーワード', with: 'いちご'
       click_button '検索する'
       click_link '締切が近い順'
-      wait_for_css_appear('.card') do
+      wait_for_css_appear('.task-card') do
         within(:test, 'task-list') do
           task_titles = all(:test, 'task-title')
           expect(task_titles.count).to be 3

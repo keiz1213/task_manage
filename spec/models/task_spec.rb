@@ -10,13 +10,13 @@ RSpec.describe Task do
       it '空ではないこと' do
         task = build(:task, title: '')
         task.valid?
-        expect(task.errors[:title]).to include("can't be blank")
+        expect(task.errors[:title]).to include("を入力してください")
       end
 
       it '30文字以内であること' do
         task = build(:task, title: 'a' * 31)
         task.valid?
-        expect(task.errors[:title]).to include("is too long (maximum is 30 characters)")
+        expect(task.errors[:title]).to include("は30文字以内で入力してください")
       end
     end
 
@@ -24,7 +24,7 @@ RSpec.describe Task do
       it '空ではないこと' do
         task = build(:task, priority: '')
         task.valid?
-        expect(task.errors[:priority]).to include("can't be blank")
+        expect(task.errors[:priority]).to include("を入力してください")
       end
     end
 
@@ -32,7 +32,7 @@ RSpec.describe Task do
       it '空ではないこと' do
         task = build(:task, deadline: '')
         task.valid?
-        expect(task.errors[:deadline]).to include("can't be blank")
+        expect(task.errors[:deadline]).to include("を入力してください")
       end
 
       it '期限は現在よりも後であること' do
@@ -46,7 +46,7 @@ RSpec.describe Task do
       it '空ではないこと' do
         task = build(:task, state: '')
         task.valid?
-        expect(task.errors[:state]).to include("can't be blank")
+        expect(task.errors[:state]).to include("を入力してください")
       end
     end
   end

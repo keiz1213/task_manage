@@ -50,4 +50,33 @@ RSpec.describe Task do
       end
     end
   end
+
+  describe '#update_state' do
+    context '現在のstateがnot_strtedの時' do
+      it 'stateがin_progressに更新される' do
+        task = create(:task)
+        expect(task.state).to eq 'not_started'
+        task.update_state
+        expect(task.state).to eq 'in_progress'
+      end
+    end
+
+    context '現在のstateがin_progressの時' do
+      it 'stateがdoneに更新される' do
+        task = create(:task, state: 'in_progress')
+        expect(task.state).to eq 'in_progress'
+        task.update_state
+        expect(task.state).to eq 'done'
+      end
+    end
+
+    context '現在のstateがdoneの時' do
+      it 'stateがnot_startedに更新される' do
+        task = create(:task, state: 'done')
+        expect(task.state).to eq 'done'
+        task.update_state
+        expect(task.state).to eq 'not_started'
+      end
+    end
+  end
 end

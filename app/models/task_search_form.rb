@@ -5,7 +5,7 @@ class TaskSearchForm
   attribute :sort_by, :string
   attribute :keyword, :string
 
-  def sort
+  def sort_task
     case sort_by
     when 'deadline'
       Task.deadline
@@ -15,7 +15,7 @@ class TaskSearchForm
   end
 
   def search
-    sorted_tasks = sort
+    sorted_tasks = sort_task
     sorted_tasks = sorted_tasks.matches(keyword) if keyword.present?
     sorted_tasks
   end

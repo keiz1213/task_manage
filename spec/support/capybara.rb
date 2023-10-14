@@ -9,5 +9,5 @@ RSpec.configure do |config|
 end
 
 Capybara.add_selector(:test) do
-  css { |val| %Q([data-test=#{val}])}
+  css { |val| %([data-test=#{val}]) }
 end

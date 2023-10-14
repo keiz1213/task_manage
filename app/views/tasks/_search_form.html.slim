@@ -1,0 +1,8 @@
+.card.shadow.mt-3
+  .card-header 検索
+  .card-body
+    = form_with model: search_form, url: tasks_path, scope: :search, method: :get do |f|
+      .form-group.mb-3
+        = f.label :keyword
+        = f.text_field :keyword, class: 'form-control'
+      = f.submit '検索する', class: 'btn btn-primary'

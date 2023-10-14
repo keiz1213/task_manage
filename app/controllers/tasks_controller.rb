@@ -50,6 +50,6 @@ class TasksController < ApplicationController
   end
 
   def search_params
-    params[:search].present? ? params.require(:search).permit(:keyword, :sort_by) : {}
+    params[:search].present? ? params.require(:search).permit(:keyword, :sort_by, :priority) : {}
   end
 end

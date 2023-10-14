@@ -14,6 +14,19 @@ class Task < ApplicationRecord
                     where("title LIKE ?", "%#{sanitize_sql_like(keyword)}%").or(where("description LIKE ?", "%#{sanitize_sql_like(keyword)}%"))
                   }
 
+  def update_state
+    new_state = ''
+    case state
+    when 'not_started'
+      new_state = 'in_progress'
+    when 'in_progress'
+      new_state = 'done'
+    when 'done'
+      new_state = 'not_started'
+    end
+    update(state: new_state)
+  end
+
   private
 
   def deadline_must_be_in_the_future

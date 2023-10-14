@@ -1,0 +1,3 @@
+= turbo_frame_tag task do
+  = form_with model: task, url: [:update_state, task] do |f|
+    = f.submit "ステータス: " + t("activerecord.attributes.task.states.#{task.state}")

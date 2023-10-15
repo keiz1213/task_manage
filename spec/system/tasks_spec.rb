@@ -104,6 +104,44 @@ RSpec.describe "Tasks" do
         end
       end
     end
+
+    it '重要度の高い順に並び替えできる' do
+      create(:task, title: '毒りんご', priority: 'high')
+      create(:task, title: 'りんごちゃん', priority: 'low')
+      create(:task, title: 'パイナップル', priority: 'mid')
+
+      visit root_path
+      click_link '優先順位が高い順'
+
+      wait_for_css_appear('.task-card') do
+        within(:test, 'task-list') do
+          task_titles = all(:test, 'task-title')
+          expect(task_titles.count).to be 3
+          expect(task_titles[0].text).to eq '毒りんご'
+          expect(task_titles[1].text).to eq 'パイナップル'
+          expect(task_titles[2].text).to eq 'りんごちゃん'
+        end
+      end
+    end
+
+    it '重要度の低い順に並び替えできる' do
+      create(:task, title: '毒りんご', priority: 'high')
+      create(:task, title: 'りんごちゃん', priority: 'low')
+      create(:task, title: 'パイナップル', priority: 'mid')
+
+      visit root_path
+      click_link '優先順位が低い順'
+
+      wait_for_css_appear('.task-card') do
+        within(:test, 'task-list') do
+          task_titles = all(:test, 'task-title')
+          expect(task_titles.count).to be 3
+          expect(task_titles[0].text).to eq 'りんごちゃん'
+          expect(task_titles[1].text).to eq 'パイナップル'
+          expect(task_titles[2].text).to eq '毒りんご'
+        end
+      end
+    end
   end
 
   describe '検索' do
@@ -175,6 +213,56 @@ RSpec.describe "Tasks" do
         end
       end
 
+      it '検索結果を重要度の高い順にソートできる' do
+        create(:task, title: '青りんご', description: 'バナナ', priority: 'high')
+        create(:task, title: 'スイカ', description: '桃太郎', priority: 'high')
+        create(:task, title: 'メロン', description: 'いちごミルク', priority: 'high')
+        create(:task, title: 'りんごちゃん', description: 'いちご摘み', priority: 'low')
+        create(:task, title: 'パイナップル', description: 'いちご', priority: 'mid')
+
+        visit root_path
+        fill_in 'キーワード', with: 'いちご'
+        click_button '検索する'
+        click_link '優先順位が高い順'
+        wait_for_css_appear('.task-card') do
+          within(:test, 'task-list') do
+            task_titles = all(:test, 'task-title')
+            expect(task_titles.count).to be 3
+            task_titles.each do |el|
+              expect(el.text).to match(/パイナップル|メロン|りんごちゃん/)
+            end
+            expect(task_titles[0].text).to eq 'メロン'
+            expect(task_titles[1].text).to eq 'パイナップル'
+            expect(task_titles[2].text).to eq 'りんごちゃん'
+          end
+        end
+      end
+
+      it '検索結果を重要度の低い順にソートできる' do
+        create(:task, title: '青りんご', description: 'バナナ', priority: 'high')
+        create(:task, title: 'スイカ', description: '桃太郎', priority: 'high')
+        create(:task, title: 'メロン', description: 'いちごミルク', priority: 'high')
+        create(:task, title: 'りんごちゃん', description: 'いちご摘み', priority: 'low')
+        create(:task, title: 'パイナップル', description: 'いちご', priority: 'mid')
+
+        visit root_path
+        fill_in 'キーワード', with: 'いちご'
+        click_button '検索する'
+        click_link '優先順位が低い順'
+        wait_for_css_appear('.task-card') do
+          within(:test, 'task-list') do
+            task_titles = all(:test, 'task-title')
+            expect(task_titles.count).to be 3
+            task_titles.each do |el|
+              expect(el.text).to match(/パイナップル|メロン|りんごちゃん/)
+            end
+            expect(task_titles[0].text).to eq 'りんごちゃん'
+            expect(task_titles[1].text).to eq 'パイナップル'
+            expect(task_titles[2].text).to eq 'メロン'
+          end
+        end
+      end
+
       it '検索結果をステータスで絞り込める' do
         create(:task, title: '青りんご', state: 'done')
         create(:task, title: '毒りんご', state: 'not_started')
@@ -221,6 +309,33 @@ RSpec.describe "Tasks" do
             expect(task_titles[0].text).to eq 'りんごの木'
             expect(task_titles[1].text).to eq '毒りんご'
             expect(task_titles[2].text).to eq '私はりんごが好きです'
+          end
+        end
+      end
+
+      it '検索結果をステータスで絞り込み、それを重要度で並び替える' do
+        create(:task, title: '青りんご', state: 'done', priority: 'mid')
+        create(:task, title: '毒りんご', state: 'not_started', priority: 'low')
+        create(:task, title: 'りんごの木', state: 'not_started', priority: 'high')
+        create(:task, title: '私はりんごが好きです', state: 'not_started', priority: 'mid')
+        create(:task, title: 'パイナップル', state: 'in_progress', priority: 'low')
+        create(:task, title: 'ぶどう', state: 'in_progress', priority: 'low')
+
+        visit root_path
+        fill_in 'キーワード', with: 'りんご'
+        click_button '検索する'
+        click_link '未着手のタスク'
+        click_link '優先順位が高い順'
+        wait_for_css_appear('.task-card') do
+          within(:test, 'task-list') do
+            task_titles = all(:test, 'task-title')
+            expect(task_titles.count).to be 3
+            task_titles.each do |el|
+              expect(el.text).to match(/毒りんご|りんごの木|私はりんごが好きです/)
+            end
+            expect(task_titles[0].text).to eq 'りんごの木'
+            expect(task_titles[1].text).to eq '私はりんごが好きです'
+            expect(task_titles[2].text).to eq '毒りんご'
           end
         end
       end
@@ -311,6 +426,31 @@ RSpec.describe "Tasks" do
             expect(task_titles[0].text).to eq 'パイナップル'
             expect(task_titles[1].text).to eq 'ぶどう'
             expect(task_titles[2].text).to eq 'みかん'
+          end
+        end
+      end
+
+      it '検索結果を重要度で並び替える' do
+        create(:task, title: '青りんご', state: 'done', priority: 'low')
+        create(:task, title: 'スイカ', state: 'not_started', priority: 'low')
+        create(:task, title: 'メロン', state: 'not_started', priority: 'low')
+        create(:task, title: 'みかん', state: 'in_progress', priority: 'mid')
+        create(:task, title: 'パイナップル', state: 'in_progress', priority: 'high')
+        create(:task, title: 'ぶどう', state: 'in_progress', priority: 'low')
+
+        visit root_path
+        click_link '着手しているタスク'
+        click_link '優先順位が高い順'
+        wait_for_css_appear('.task-card') do
+          within(:test, 'task-list') do
+            task_titles = all(:test, 'task-title')
+            expect(task_titles.count).to be 3
+            task_titles.each do |el|
+              expect(el.text).to match(/パイナップル|ぶどう|みかん/)
+            end
+            expect(task_titles[0].text).to eq 'パイナップル'
+            expect(task_titles[1].text).to eq 'みかん'
+            expect(task_titles[2].text).to eq 'ぶどう'
           end
         end
       end

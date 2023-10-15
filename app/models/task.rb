@@ -10,6 +10,8 @@ class Task < ApplicationRecord
 
   scope :recent, -> { order(created_at: :desc) }
   scope :deadline, -> { order(deadline: :asc) }
+  scope :high_priority_first, -> { order(priority: :desc) }
+  scope :low_priority_first, -> { order(priority: :asc) }
   scope :matches, ->(keyword) {
                     where("title LIKE ?", "%#{sanitize_sql_like(keyword)}%").or(where("description LIKE ?", "%#{sanitize_sql_like(keyword)}%"))
                   }

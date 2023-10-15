@@ -10,6 +10,10 @@ class TaskSearchForm
     case sort_by
     when 'deadline'
       Task.deadline
+    when 'low'
+      Task.low_priority_first
+    when 'high'
+      Task.high_priority_first
     else
       Task.recent
     end

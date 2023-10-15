@@ -3,7 +3,7 @@ class TasksController < ApplicationController
 
   def index
     @search_form = TaskSearchForm.new(search_params)
-    @tasks = @search_form.search
+    @tasks = @search_form.search.page(params[:page])
   end
 
   def show

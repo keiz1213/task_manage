@@ -23,6 +23,28 @@ RSpec.describe TaskSearchForm do
       expect(search_form.sort_task[1]).to eq task3
       expect(search_form.sort_task[2]).to eq task2
     end
+
+    it '優先度が高い順にソートできる' do
+      task1 = create(:task, title: '青りんご', priority: 'mid')
+      task2 = create(:task, title: 'スイカ', priority: 'low')
+      task3 = create(:task, title: 'メロン', priority: 'high')
+
+      search_form = build(:task_search_form, :sort_by_priority_high)
+      expect(search_form.sort_task[0]).to eq task3
+      expect(search_form.sort_task[1]).to eq task1
+      expect(search_form.sort_task[2]).to eq task2
+    end
+
+    it '優先度が低い順にソートできる' do
+      task1 = create(:task, title: '青りんご', priority: 'mid')
+      task2 = create(:task, title: 'スイカ', priority: 'low')
+      task3 = create(:task, title: 'メロン', priority: 'high')
+
+      search_form = build(:task_search_form, :sort_by_priority_low)
+      expect(search_form.sort_task[0]).to eq task2
+      expect(search_form.sort_task[1]).to eq task1
+      expect(search_form.sort_task[2]).to eq task3
+    end
   end
 
   describe 'サーチ' do
@@ -88,6 +110,36 @@ RSpec.describe TaskSearchForm do
       expect(result[2].title).to eq 'りんごちゃん'
     end
 
+    it 'キーワード検索の結果を優先順位が高い順にソートできる' do
+      create(:task, title: '青りんご', priority: 'low')
+      create(:task, title: 'スイカ', priority: 'mid')
+      create(:task, title: '毒りんご', priority: 'high')
+      create(:task, title: 'りんごちゃん', priority: 'mid')
+      create(:task, title: 'パイナップル', priority: 'high')
+
+      task_search_form = build(:task_search_form, keyword: 'りんご', sort_by: 'high')
+      result = task_search_form.search
+      expect(result.count).to be 3
+      expect(result[0].title).to eq '毒りんご'
+      expect(result[1].title).to eq 'りんごちゃん'
+      expect(result[2].title).to eq '青りんご'
+    end
+
+    it 'キーワード検索の結果を優先順位が低い順にソートできる' do
+      create(:task, title: '青りんご', priority: 'low')
+      create(:task, title: 'スイカ', priority: 'mid')
+      create(:task, title: '毒りんご', priority: 'high')
+      create(:task, title: 'りんごちゃん', priority: 'mid')
+      create(:task, title: 'パイナップル', priority: 'high')
+
+      task_search_form = build(:task_search_form, keyword: 'りんご', sort_by: 'low')
+      result = task_search_form.search
+      expect(result.count).to be 3
+      expect(result[0].title).to eq '青りんご'
+      expect(result[1].title).to eq 'りんごちゃん'
+      expect(result[2].title).to eq '毒りんご'
+    end
+
     it 'ステータス検索の結果を締切が近い順にソートできる' do
       create(:task, title: '青りんご', state: 'not_started', deadline: Time.current.since(5.days))
       create(:task, title: 'スイカ', state: 'not_started', deadline: Time.current.since(3.days))
@@ -101,6 +153,36 @@ RSpec.describe TaskSearchForm do
       expect(result[0].title).to eq 'メロン'
       expect(result[1].title).to eq 'スイカ'
       expect(result[2].title).to eq '青りんご'
+    end
+
+    it 'ステータス検索の結果を優先順位が高い順にソートできる' do
+      create(:task, title: '青りんご', state: 'in_progress', priority: 'low')
+      create(:task, title: 'スイカ', state: 'not_started', priority: 'mid')
+      create(:task, title: '毒りんご', state: 'in_progress', priority: 'high')
+      create(:task, title: 'りんごちゃん', state: 'in_progress', priority: 'mid')
+      create(:task, title: 'パイナップル', state: 'done', priority: 'high')
+
+      task_search_form = build(:task_search_form, state: 'in_progress', sort_by: 'high')
+      result = task_search_form.search
+      expect(result.count).to be 3
+      expect(result[0].title).to eq '毒りんご'
+      expect(result[1].title).to eq 'りんごちゃん'
+      expect(result[2].title).to eq '青りんご'
+    end
+
+    it 'ステータス検索の結果を優先順位が低い順にソートできる' do
+      create(:task, title: '青りんご', state: 'in_progress', priority: 'low')
+      create(:task, title: 'スイカ', state: 'not_started', priority: 'mid')
+      create(:task, title: '毒りんご', state: 'in_progress', priority: 'high')
+      create(:task, title: 'りんごちゃん', state: 'in_progress', priority: 'mid')
+      create(:task, title: 'パイナップル', state: 'done', priority: 'high')
+
+      task_search_form = build(:task_search_form, state: 'in_progress', sort_by: 'low')
+      result = task_search_form.search
+      expect(result.count).to be 3
+      expect(result[0].title).to eq '青りんご'
+      expect(result[1].title).to eq 'りんごちゃん'
+      expect(result[2].title).to eq '毒りんご'
     end
   end
 end

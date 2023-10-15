@@ -58,7 +58,22 @@ RSpec.describe TaskSearchForm do
       end
     end
 
-    it '検索結果を締切が近い順にソートできる' do
+    it 'ステータスで検索できる' do
+      create(:task, title: '青りんご', state: 'not_started')
+      create(:task, title: 'スイカ', state: 'not_started')
+      create(:task, title: 'メロン', state: 'in_progress')
+      create(:task, title: 'りんごちゃん', state: 'in_progress')
+      create(:task, title: 'パイナップル', state: 'done')
+
+      task_search_form = build(:task_search_form, state: 'in_progress')
+      result = task_search_form.search
+      expect(result.count).to be 2
+      result.each do |task|
+        expect(task.state).to eq 'in_progress'
+      end
+    end
+
+    it 'キーワード検索の結果を締切が近い順にソートできる' do
       create(:task, title: '青りんご', description: 'バナナ', deadline: Time.current.since(5.days))
       create(:task, title: 'スイカ', description: '桃太郎', deadline: Time.current.since(3.days))
       create(:task, title: 'メロン', description: 'いちごみるく', deadline: Time.current.since(2.days))
@@ -67,9 +82,25 @@ RSpec.describe TaskSearchForm do
 
       task_search_form = build(:task_search_form, keyword: 'いちご', sort_by: 'deadline')
       result = task_search_form.search
+      expect(result.count).to be 3
       expect(result[0].title).to eq 'パイナップル'
       expect(result[1].title).to eq 'メロン'
       expect(result[2].title).to eq 'りんごちゃん'
+    end
+
+    it 'ステータス検索の結果を締切が近い順にソートできる' do
+      create(:task, title: '青りんご', state: 'not_started', deadline: Time.current.since(5.days))
+      create(:task, title: 'スイカ', state: 'not_started', deadline: Time.current.since(3.days))
+      create(:task, title: 'メロン', state: 'not_started', deadline: Time.current.since(2.days))
+      create(:task, title: 'りんごちゃん', state: 'in_progress', deadline: Time.current.since(4.days))
+      create(:task, title: 'パイナップル', state: 'done', deadline: Time.current.since(1.day))
+
+      task_search_form = build(:task_search_form, state: 'not_started', sort_by: 'deadline')
+      result = task_search_form.search
+      expect(result.count).to be 3
+      expect(result[0].title).to eq 'メロン'
+      expect(result[1].title).to eq 'スイカ'
+      expect(result[2].title).to eq '青りんご'
     end
   end
 end

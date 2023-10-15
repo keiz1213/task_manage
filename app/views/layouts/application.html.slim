@@ -9,7 +9,14 @@ html
     = stylesheet_link_tag "application", "data-turbo-track": "reload"
     = javascript_include_tag "application", "data-turbo-track": "reload", defer: true
   body
-    .container
-      - if flash.notice.present?
-        .alert.alert-success= flash.notice
-      = yield
+    .vh-100
+      .caotainer-fluid
+        .row
+          .ps-0(style="width: 220px")
+          .ps-0.position-fixed(style="width: 220px")
+            = render 'sidebar'
+          .col.my-4.mx-4
+            - if flash.notice.present?
+              .alert.alert-success= flash.notice
+            = yield
+

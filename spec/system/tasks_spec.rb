@@ -182,7 +182,7 @@ RSpec.describe "Tasks" do
         create(:task, title: '私はりんごが好きです', state: 'in_progress')
         create(:task, title: 'パイナップル', state: 'in_progress')
         create(:task, title: 'ぶどう', state: 'in_progress')
-  
+
         visit root_path
         fill_in 'キーワード', with: 'りんご'
         click_button '検索する'
@@ -320,7 +320,7 @@ RSpec.describe "Tasks" do
   describe 'タスクのステータス更新' do
     context '現在のステータスが「未着手」の時' do
       it 'ステータスが「着手」に更新される' do
-        task = create(:task)
+        create(:task)
 
         visit root_path
         expect(find(:test, 'update-state').value).to eq 'ステータス: 未着手'
@@ -333,7 +333,7 @@ RSpec.describe "Tasks" do
 
     context '現在のステータスが「着手」の時' do
       it 'ステータスが「完了」に更新される' do
-        task = create(:task, state: 'in_progress')
+        create(:task, state: 'in_progress')
 
         visit root_path
         expect(find(:test, 'update-state').value).to eq 'ステータス: 着手'
@@ -346,7 +346,7 @@ RSpec.describe "Tasks" do
 
     context '現在のステータスが「完了」の時' do
       it 'ステータスが「未着手」に更新される' do
-        task = create(:task, state: 'done')
+        create(:task, state: 'done')
 
         visit root_path
         expect(find(:test, 'update-state').value).to eq 'ステータス: 完了'

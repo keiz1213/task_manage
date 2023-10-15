@@ -73,3 +73,4 @@ end
 
 gem "slim-rails"
 gem "html2slim"
+gem "kaminari"

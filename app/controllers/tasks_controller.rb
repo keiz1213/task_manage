@@ -1,5 +1,5 @@
 class TasksController < ApplicationController
-  before_action :set_task, only: %i[show edit update destroy]
+  before_action :set_task, only: %i[show edit update destroy update_state]
 
   def index
     @search_form = TaskSearchForm.new(search_params)
@@ -39,6 +39,11 @@ class TasksController < ApplicationController
     redirect_to tasks_url, notice: "タスク: #{@task.title}を削除しました"
   end
 
+  def update_state
+    @task.update_state
+    render turbo_stream: turbo_stream.replace(@task, partial: 'state', locals: { task: @task })
+  end
+
   private
 
   def set_task
@@ -50,6 +55,6 @@ class TasksController < ApplicationController
   end
 
   def search_params
-    params[:search].present? ? params.require(:search).permit(:keyword, :sort_by) : {}
+    params[:search].present? ? params.require(:search).permit(:keyword, :sort_by, :state) : {}
   end
 end

@@ -9,7 +9,7 @@ module TasksHelper
     when 'high'
       classes << 'text-bg-danger'
     end
-    tag.span(class: classes) { '重要度: ' + t("activerecord.attributes.task.priorities.#{task.priority}") }
+    tag.span(class: classes) { "重要度: #{t("activerecord.attributes.task.priorities.#{task.priority}")}" }
   end
 
   def submit_state(form, task)
@@ -22,7 +22,7 @@ module TasksHelper
     when 'done'
       classes << 'btn-outline-success'
     end
-    form.submit t("activerecord.attributes.task.states.#{task.state}"), data: { test: 'update-state'}, class: classes
+    form.submit t("activerecord.attributes.task.states.#{task.state}"), data: { test: 'update-state' }, class: classes
   end
 
   def link_to_search_by_state(text, state, search_form)

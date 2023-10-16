@@ -1,10 +1,12 @@
-.card.my-3.task-card
+.card.my-3.task-card(style="width: 22rem")
   .card-header
     .d-flex.justify-content-between
-      span = link_to task.title, task, data: { test: 'task-title' }
-      span = '重要度: ' + t("activerecord.attributes.task.priorities.#{task.priority}")
+      h5.card-title.my-auto = link_to task.title, task, data: { test: 'task-title' }, class: "text-decoration-none"
+      = priority_badge(task)
   .card-body
     = render partial: 'state', locals: { task: task }
-    p = "締め切り: " + l(task.deadline, format: :long)
-    = link_to '編集', edit_task_path(task), class: 'btn btn-primary mx-1'
-    = link_to '削除', task, data: { turbo_method: :delete, turbo_confirm: '本当に削除しますか？' }, class: 'btn btn-primary mx-1'
+    .d-flex.justify-content-between
+      = "締め切り: " + l(task.deadline, format: :long)
+      .
+        = link_to '編集', edit_task_path(task), class: 'mx-1 text-decoration-none'
+        = link_to '削除', task, data: { turbo_method: :delete, turbo_confirm: '本当に削除しますか？' }, class: 'mx-1 text-decoration-none'

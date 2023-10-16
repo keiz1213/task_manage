@@ -5,6 +5,8 @@
       = priority_badge(task)
   .card-body
     = render partial: 'state', locals: { task: task }
-    p = "締め切り: " + l(task.deadline, format: :long)
-    = link_to '編集', edit_task_path(task), class: 'btn btn-primary mx-1'
-    = link_to '削除', task, data: { turbo_method: :delete, turbo_confirm: '本当に削除しますか？' }, class: 'btn btn-primary mx-1'
+    .d-flex.justify-content-between
+      = "締め切り: " + l(task.deadline, format: :long)
+      .
+        = link_to '編集', edit_task_path(task), class: 'mx-1 text-decoration-none'
+        = link_to '削除', task, data: { turbo_method: :delete, turbo_confirm: '本当に削除しますか？' }, class: 'mx-1 text-decoration-none'

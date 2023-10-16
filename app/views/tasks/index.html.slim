@@ -8,7 +8,7 @@
     li.navitem = link_to '締切が近い順', tasks_path(search: { keyword: @search_form.keyword, sort_by: 'deadline', state: @search_form.state }), method: 'get', class: 'nav-link'
     li.navitem = link_to 'リセット', tasks_path, method: 'get', class: 'nav-link'
 .
-  .row.row-cols-3
+  .row.row-cols-3 data-test="task-list"
     - @tasks.each do |task|
       .col = render partial: 'task', locals: { task: task }
 .d-flex.justify-content-end.my-3

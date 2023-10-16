@@ -13,10 +13,9 @@ RSpec.describe "Tasks" do
         fill_in '締め切り', with: Time.mktime(2100, 1, 2, 3, 4)
         click_button '登録'
         expect(page).to have_content('タスク: test-taskを作成しました')
-        expect(page).to have_content('tasks#index!')
         expect(page).to have_content('test-task')
         expect(page).to have_content('重要度: 中')
-        expect(page.find(:test, 'update-state').value).to eq 'ステータス: 未着手'
+        expect(page.find(:test, 'update-state').value).to eq '未着手'
         expect(page).to have_content("締め切り: 2100/01/02 03:04")
       }.to change(Task, :count).by(1)
     end
@@ -61,10 +60,9 @@ RSpec.describe "Tasks" do
         click_button '更新する'
         expect(page).to have_content('foo')
         expect(page).to have_content('タスク: fooを更新しました')
-        expect(page).to have_content('tasks#index!')
         expect(page).to have_content('foo')
         expect(page).to have_content('重要度: 高')
-        expect(page.find(:test, 'update-state').value).to eq 'ステータス: 未着手'
+        expect(page.find(:test, 'update-state').value).to eq '未着手'
         expect(page).to have_content('締め切り: 2200/01/02 03:04')
       }.not_to change(Task, :count)
     end
@@ -78,7 +76,6 @@ RSpec.describe "Tasks" do
           click_link '削除'
         end
         expect(page).to have_content("タスク: #{task.title}を削除しました")
-        expect(page).to have_content('tasks#index!')
       }.to change(Task, :count).by(-1)
     end
   end
@@ -463,11 +460,11 @@ RSpec.describe "Tasks" do
         create(:task)
 
         visit root_path
-        expect(find(:test, 'update-state').value).to eq 'ステータス: 未着手'
-        click_button 'ステータス: 未着手'
+        expect(find(:test, 'update-state').value).to eq '未着手'
+        click_button '未着手'
         # TODO
         sleep(2)
-        expect(find(:test, 'update-state').value).to eq 'ステータス: 着手'
+        expect(find(:test, 'update-state').value).to eq '着手'
       end
     end
 
@@ -476,11 +473,11 @@ RSpec.describe "Tasks" do
         create(:task, state: 'in_progress')
 
         visit root_path
-        expect(find(:test, 'update-state').value).to eq 'ステータス: 着手'
-        click_button 'ステータス: 着手'
+        expect(find(:test, 'update-state').value).to eq '着手'
+        click_button '着手'
         # TODO
         sleep(2)
-        expect(find(:test, 'update-state').value).to eq 'ステータス: 完了'
+        expect(find(:test, 'update-state').value).to eq '完了'
       end
     end
 
@@ -489,11 +486,11 @@ RSpec.describe "Tasks" do
         create(:task, state: 'done')
 
         visit root_path
-        expect(find(:test, 'update-state').value).to eq 'ステータス: 完了'
-        click_button 'ステータス: 完了'
+        expect(find(:test, 'update-state').value).to eq '完了'
+        click_button '完了'
         # TODO
         sleep(2)
-        expect(find(:test, 'update-state').value).to eq 'ステータス: 未着手'
+        expect(find(:test, 'update-state').value).to eq '未着手'
       end
     end
   end

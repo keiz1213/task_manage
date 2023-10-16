@@ -108,7 +108,7 @@ RSpec.describe "Tasks" do
       create(:task, title: 'パイナップル', priority: 'mid')
 
       visit root_path
-      click_link '優先順位が高い順'
+      click_link '重要度の高い順'
 
       wait_for_css_appear('.task-card') do
         within(:test, 'task-list') do
@@ -127,7 +127,7 @@ RSpec.describe "Tasks" do
       create(:task, title: 'パイナップル', priority: 'mid')
 
       visit root_path
-      click_link '優先順位が低い順'
+      click_link '重要度の低い順'
 
       wait_for_css_appear('.task-card') do
         within(:test, 'task-list') do
@@ -220,7 +220,7 @@ RSpec.describe "Tasks" do
         visit root_path
         fill_in 'キーワード', with: 'いちご'
         click_button '検索する'
-        click_link '優先順位が高い順'
+        click_link '重要度の高い順'
         wait_for_css_appear('.task-card') do
           within(:test, 'task-list') do
             task_titles = all(:test, 'task-title')
@@ -245,7 +245,7 @@ RSpec.describe "Tasks" do
         visit root_path
         fill_in 'キーワード', with: 'いちご'
         click_button '検索する'
-        click_link '優先順位が低い順'
+        click_link '重要度の低い順'
         wait_for_css_appear('.task-card') do
           within(:test, 'task-list') do
             task_titles = all(:test, 'task-title')
@@ -322,7 +322,7 @@ RSpec.describe "Tasks" do
         fill_in 'キーワード', with: 'りんご'
         click_button '検索する'
         click_link '未着手のタスク'
-        click_link '優先順位が高い順'
+        click_link '重要度の高い順'
         wait_for_css_appear('.task-card') do
           within(:test, 'task-list') do
             task_titles = all(:test, 'task-title')
@@ -437,7 +437,7 @@ RSpec.describe "Tasks" do
 
         visit root_path
         click_link '着手しているタスク'
-        click_link '優先順位が高い順'
+        click_link '重要度の高い順'
         wait_for_css_appear('.task-card') do
           within(:test, 'task-list') do
             task_titles = all(:test, 'task-title')

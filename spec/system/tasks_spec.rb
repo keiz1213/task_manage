@@ -152,7 +152,7 @@ RSpec.describe "Tasks" do
 
         visit root_path
         fill_in 'キーワード', with: 'りんご'
-        click_button '検索する'
+        click_button '検索'
         wait_for_css_appear('.task-card') do
           within(:test, 'task-list') do
             task_titles = all(:test, 'task-title')
@@ -173,7 +173,7 @@ RSpec.describe "Tasks" do
 
         visit root_path
         fill_in 'キーワード', with: '桃'
-        click_button '検索する'
+        click_button '検索'
         wait_for_css_appear('.task-card') do
           task_titles = []
           within(:test, 'task-list') do
@@ -194,7 +194,7 @@ RSpec.describe "Tasks" do
 
         visit root_path
         fill_in 'キーワード', with: 'いちご'
-        click_button '検索する'
+        click_button '検索'
         click_link '締切が近い順'
         wait_for_css_appear('.task-card') do
           within(:test, 'task-list') do
@@ -219,7 +219,7 @@ RSpec.describe "Tasks" do
 
         visit root_path
         fill_in 'キーワード', with: 'いちご'
-        click_button '検索する'
+        click_button '検索'
         click_link '重要度の高い順'
         wait_for_css_appear('.task-card') do
           within(:test, 'task-list') do
@@ -244,7 +244,7 @@ RSpec.describe "Tasks" do
 
         visit root_path
         fill_in 'キーワード', with: 'いちご'
-        click_button '検索する'
+        click_button '検索'
         click_link '重要度の低い順'
         wait_for_css_appear('.task-card') do
           within(:test, 'task-list') do
@@ -270,7 +270,7 @@ RSpec.describe "Tasks" do
 
         visit root_path
         fill_in 'キーワード', with: 'りんご'
-        click_button '検索する'
+        click_button '検索'
         click_link '未着手のタスク'
         wait_for_css_appear('.task-card') do
           within(:test, 'task-list') do
@@ -293,7 +293,7 @@ RSpec.describe "Tasks" do
 
         visit root_path
         fill_in 'キーワード', with: 'りんご'
-        click_button '検索する'
+        click_button '検索'
         click_link '未着手のタスク'
         click_link '締切が近い順'
         wait_for_css_appear('.task-card') do
@@ -320,7 +320,7 @@ RSpec.describe "Tasks" do
 
         visit root_path
         fill_in 'キーワード', with: 'りんご'
-        click_button '検索する'
+        click_button '検索'
         click_link '未着手のタスク'
         click_link '重要度の高い順'
         wait_for_css_appear('.task-card') do

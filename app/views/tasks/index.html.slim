@@ -1,12 +1,12 @@
-= link_to '新規タスク', new_task_path, class: 'btn btn-primary'
-.d-flex.justify-content-end
+.d-flex.justify-content-end.my-3
+  = paginate @tasks
+.d-flex.justify-content-between
+  = link_to '新規タスク', new_task_path, class: 'btn btn-primary'
   .nav
     li.navitem = link_to '優先順位が高い順', tasks_path(search: { keyword: @search_form.keyword, sort_by: 'high', state: @search_form.state }), method: 'get', class: 'nav-link'
     li.navitem = link_to '優先順位が低い順', tasks_path(search: { keyword: @search_form.keyword, sort_by: 'low', state: @search_form.state }), method: 'get', class: 'nav-link'
     li.navitem = link_to '締切が近い順', tasks_path(search: { keyword: @search_form.keyword, sort_by: 'deadline', state: @search_form.state }), method: 'get', class: 'nav-link'
     li.navitem = link_to 'リセット', tasks_path, method: 'get', class: 'nav-link'
-.d-flex.justify-content-end.my-3
-  = paginate @tasks
 - @tasks.each do |task|
   = render partial: 'task', locals: { task: task }
 .d-flex.justify-content-end.my-3

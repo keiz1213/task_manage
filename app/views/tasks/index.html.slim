@@ -7,7 +7,9 @@
     li.navitem = link_to '優先順位が低い順', tasks_path(search: { keyword: @search_form.keyword, sort_by: 'low', state: @search_form.state }), method: 'get', class: 'nav-link'
     li.navitem = link_to '締切が近い順', tasks_path(search: { keyword: @search_form.keyword, sort_by: 'deadline', state: @search_form.state }), method: 'get', class: 'nav-link'
     li.navitem = link_to 'リセット', tasks_path, method: 'get', class: 'nav-link'
-- @tasks.each do |task|
-  = render partial: 'task', locals: { task: task }
+.
+  .row.row-cols-3
+    - @tasks.each do |task|
+      .col = render partial: 'task', locals: { task: task }
 .d-flex.justify-content-end.my-3
   = paginate @tasks

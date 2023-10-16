@@ -14,7 +14,7 @@ html
         .row
           .ps-0(style="width: 220px")
           .ps-0.position-fixed(style="width: 220px")
-            = render 'sidebar'
+            = render partial: 'sidebar', locals: { search_form: @search_form }
           .col.my-4.mx-4
             - if flash.notice.present?
               .alert.alert-success= flash.notice

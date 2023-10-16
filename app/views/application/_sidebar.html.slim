@@ -5,10 +5,10 @@
 
   .mb-4
     .fs-5.text-center.mb-1 キーワード検索
-    . = render partial: 'search_form', locals: { search_form: @search_form }
+    . = render partial: 'search_form', locals: { search_form: search_form }
   .mb-4
     .fs-5.text-center.mb-1 絞り込み
     .d-grid.gap-2
-      = link_to '未着手のタスク', tasks_path(search: { keyword: @search_form.keyword, sort_by: @search_form.sort_by, state: 'not_started' }), method: 'get', class: 'btn btn-outline-secondary'
-      = link_to '着手しているタスク', tasks_path(search: { keyword: @search_form.keyword, sort_by: @search_form.sort_by, state: 'in_progress' }), method: 'get', class: 'btn btn-outline-primary'
-      = link_to '完了したタスク', tasks_path(search: { keyword: @search_form.keyword, sort_by: @search_form.sort_by, state: 'done' }), method: 'get', class: 'btn btn-outline-success'
+      = link_to '未着手のタスク', tasks_path(search: { keyword: search_form.keyword, sort_by: search_form.sort_by, state: 'not_started' }), method: 'get', class: 'btn btn-outline-secondary'
+      = link_to '着手しているタスク', tasks_path(search: { keyword: search_form.keyword, sort_by: search_form.sort_by, state: 'in_progress' }), method: 'get', class: 'btn btn-outline-primary'
+      = link_to '完了したタスク', tasks_path(search: { keyword: search_form.keyword, sort_by: search_form.sort_by, state: 'done' }), method: 'get', class: 'btn btn-outline-success'

@@ -16,7 +16,9 @@ html
           .ps-0.position-fixed(style="width: 250px")
             = render partial: 'sidebar', locals: { search_form: @search_form }
           .col.my-4.mx-4
-            - if flash.notice.present?
-              .alert.alert-success= flash.notice
+            - if flash.any?
+              - flash.each do |message_type, message|
+                .col.my-4.mx-4
+                  = content_tag(:div, message, class: "alert alert-#{message_type}")
             = yield
 

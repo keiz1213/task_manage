@@ -8,5 +8,10 @@ html
     = csp_meta_tag
     = stylesheet_link_tag "application", "data-turbo-track": "reload"
     = javascript_include_tag "application", "data-turbo-track": "reload", defer: true
-  body.d-flex.align-items-center.my-5.bg-light
-    = yield
+  body.bg-light
+    - if flash.any?
+      - flash.each do |message_type, message|
+        .col.my-4.mx-4
+          = content_tag(:div, message, class: "alert alert-#{message_type}")
+    .d-flex.align-items-center.my-5
+      = yield

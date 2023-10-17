@@ -19,7 +19,8 @@ class TasksController < ApplicationController
     @task = Task.new(task_params)
 
     if @task.save
-      redirect_to tasks_path, notice: "タスク: #{@task.title}を作成しました"
+      flash[:success] = "タスク: #{@task.title}を作成しました"
+      redirect_to tasks_path
     else
       render :new, status: :unprocessable_entity
     end
@@ -27,7 +28,8 @@ class TasksController < ApplicationController
 
   def update
     if @task.update(task_params)
-      redirect_to tasks_path, notice: "タスク: #{@task.title}を更新しました"
+      flash[:success] = "タスク: #{@task.title}を更新しました"
+      redirect_to tasks_path
     else
       render :edit, status: :unprocessable_entity
     end
@@ -35,7 +37,8 @@ class TasksController < ApplicationController
 
   def destroy
     @task.destroy
-    redirect_to tasks_url, notice: "タスク: #{@task.title}を削除しました"
+    flash[:success] = "タスク: #{@task.title}を削除しました"
+    redirect_to tasks_url
   end
 
   def update_state

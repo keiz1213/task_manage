@@ -1,5 +1,3 @@
-require 'factory_bot_rails'
-
 # 重要度を指定してその重要度のタスクを9個つくる
 def create_tasks(user:, priority:)
   state = ''
@@ -24,8 +22,11 @@ def create_tasks(user:, priority:)
   end
 end
 
-master_user = FactoryBot.create(:user, :master_user)
-
+master_user = User.find_or_create_by!(email: 'master@example.com') do |user|
+  user.name = 'master'
+  user.password = 'password'
+  user.password_confirmation = 'password'
+end
 create_tasks(user: master_user, priority: 'low')
 create_tasks(user: master_user, priority: 'mid')
 create_tasks(user: master_user, priority: 'high')

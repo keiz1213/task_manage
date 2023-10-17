@@ -1,7 +1,7 @@
 require 'factory_bot_rails'
 
 # 重要度を指定してその重要度のタスクを9個つくる
-def create_tasks(priority:)
+def create_tasks(user:, priority:)
   state = ''
   3.times do |i1|
     case i1
@@ -13,8 +13,7 @@ def create_tasks(priority:)
       state = 'done'
     end
     3.times do |i2|
-      FactoryBot.create(
-        :task,
+      user.tasks.create(
         title: Faker::Book.unique.title,
         description: Faker::Lorem.sentence,
         priority: priority,
@@ -25,6 +24,8 @@ def create_tasks(priority:)
   end
 end
 
-create_tasks(priority: 'low')
-create_tasks(priority: 'mid')
-create_tasks(priority: 'high')
+master_user = FactoryBot.create(:user, :master_user)
+
+create_tasks(user: master_user, priority: 'low')
+create_tasks(user: master_user, priority: 'mid')
+create_tasks(user: master_user, priority: 'high')

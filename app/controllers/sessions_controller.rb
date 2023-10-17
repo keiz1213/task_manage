@@ -13,4 +13,9 @@ class SessionsController < ApplicationController
       render :new, status: :unprocessable_entity
     end
   end
+
+  def destroy
+    logout
+    redirect_to login_path, status: :see_other
+  end
 end

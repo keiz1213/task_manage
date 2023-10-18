@@ -25,7 +25,7 @@ class User < ApplicationRecord
   end
 
   def session_token
-    remember_digest | remember
+    remember_digest || remember
   end
 
   def authenticated?(remember_token)

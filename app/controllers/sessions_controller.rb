@@ -5,10 +5,11 @@ class SessionsController < ApplicationController
   def create
     user = User.find_by(email: params[:session][:email].downcase)
     if user&.authenticate(params[:session][:password])
+      forwarding_url = session[:forwarding_url]
       reset_session
       params[:session][:remember_me] == '1' ? remember(user) : forget(user)
       login(user)
-      redirect_to tasks_path
+      redirect_to forwarding_url || tasks_path
     else
       flash.now[:danger] = 'パスワードまたはメールアドレスが間違っています'
       render :new, status: :unprocessable_entity

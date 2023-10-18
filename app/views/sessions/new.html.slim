@@ -5,6 +5,10 @@
   = f.email_field :email, class: 'form-control mb-3'
 
   = f.label :password, class: 'form-floating'
-  = f.password_field :password, class: 'form-control mb-4'
+  = f.password_field :password, class: 'form-control mb-1'
+
+  = f.label :remember_me, class: 'checkbox inline mb-3' do
+    = f.check_box :remember_me
+    span ログインしたままにする
 
   = f.submit 'ログイン', class: 'btn btn-primary w-100'

@@ -6,16 +6,17 @@ class TaskSearchForm
   attribute :keyword, :string
   attribute :state, :string
 
-  def sort_task
+  def sort_task(user)
+    tasks = user.tasks
     case sort_by
     when 'deadline'
-      Task.deadline
+      tasks.deadline
     when 'low'
-      Task.low_priority_first
+      tasks.low_priority_first
     when 'high'
-      Task.high_priority_first
+      tasks.high_priority_first
     else
-      Task.recent
+      tasks.recent
     end
   end
 
@@ -30,8 +31,8 @@ class TaskSearchForm
     end
   end
 
-  def search
-    sorted_tasks = sort_task
+  def search(user)
+    sorted_tasks = sort_task(user)
     sorted_tasks = sorted_tasks.matches(keyword) if keyword.present?
     sorted_tasks = narrow_down_by_state(sorted_tasks) if state.present?
     sorted_tasks

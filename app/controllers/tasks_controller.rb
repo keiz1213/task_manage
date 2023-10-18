@@ -3,7 +3,7 @@ class TasksController < ApplicationController
   before_action :logged_in_user
 
   def index
-    @tasks = @search_form.search.page(params[:page])
+    @tasks = @search_form.search(current_user).page(params[:page])
   end
 
   def show

@@ -22,6 +22,7 @@ module SessionsHelper
       user && user.authenticated?(cookies.encrypted[:remember_token])
       log_in(user)
       @current_user = user
+    end
   end
 
   def logged_in?

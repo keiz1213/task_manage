@@ -1,5 +1,6 @@
 class TasksController < ApplicationController
   before_action :set_task, only: %i[show edit update destroy update_state]
+  before_action :logged_in_user
 
   def index
     @tasks = @search_form.search.page(params[:page])
@@ -54,5 +55,12 @@ class TasksController < ApplicationController
 
   def task_params
     params.require(:task).permit(:title, :description, :priority, :deadline, :state)
+  end
+
+  def logged_in_user
+    unless logged_in?
+      flash[:danger] = 'ログインしてください'
+      redirect_to login_url, status: :see_other
+    end
   end
 end

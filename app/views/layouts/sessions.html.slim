@@ -1,0 +1,17 @@
+doctype html
+html
+  head
+    title
+      | TaskManage
+    meta[name="viewport" content="width=device-width,initial-scale=1"]
+    = csrf_meta_tags
+    = csp_meta_tag
+    = stylesheet_link_tag "application", "data-turbo-track": "reload"
+    = javascript_include_tag "application", "data-turbo-track": "reload", defer: true
+  body.bg-light
+    - if flash.any?
+      - flash.each do |message_type, message|
+        .col.my-4.mx-4
+          = content_tag(:div, message, class: "alert alert-#{message_type}")
+    .d-flex.align-items-center.my-5
+      = yield

@@ -1,8 +1,9 @@
 class TasksController < ApplicationController
+  before_action :logged_in_user
   before_action :set_task, only: %i[show edit update destroy update_state]
 
   def index
-    @tasks = @search_form.search.page(params[:page])
+    @tasks = @search_form.search(current_user).page(params[:page])
   end
 
   def show
@@ -16,10 +17,11 @@ class TasksController < ApplicationController
   end
 
   def create
-    @task = Task.new(task_params)
+    @task = current_user.tasks.new(task_params)
 
     if @task.save
-      redirect_to tasks_path, notice: "タスク: #{@task.title}を作成しました"
+      flash[:success] = "タスク: #{@task.title}を作成しました"
+      redirect_to tasks_path
     else
       render :new, status: :unprocessable_entity
     end
@@ -27,7 +29,8 @@ class TasksController < ApplicationController
 
   def update
     if @task.update(task_params)
-      redirect_to tasks_path, notice: "タスク: #{@task.title}を更新しました"
+      flash[:success] = "タスク: #{@task.title}を更新しました"
+      redirect_to tasks_path
     else
       render :edit, status: :unprocessable_entity
     end
@@ -35,7 +38,8 @@ class TasksController < ApplicationController
 
   def destroy
     @task.destroy
-    redirect_to tasks_url, notice: "タスク: #{@task.title}を削除しました"
+    flash[:success] = "タスク: #{@task.title}を削除しました"
+    redirect_to tasks_url
   end
 
   def update_state
@@ -46,10 +50,19 @@ class TasksController < ApplicationController
   private
 
   def set_task
-    @task = Task.find(params[:id])
+    @task = current_user&.tasks&.find_by(id: params[:id])
+    redirect_to tasks_path, status: :see_other if @task.nil?
   end
 
   def task_params
     params.require(:task).permit(:title, :description, :priority, :deadline, :state)
+  end
+
+  def logged_in_user
+    unless logged_in?
+      store_location
+      flash[:danger] = 'ログインしてください'
+      redirect_to login_url, status: :see_other
+    end
   end
 end

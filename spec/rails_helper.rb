@@ -62,4 +62,7 @@ RSpec.configure do |config|
   # config.filter_gems_from_backtrace("gem name")
 
   config.include FactoryBot::Syntax::Methods
+  config.include SystemHelpers, type: :system
+  config.include ShowMeTheCookies, type: :system
+  config.include RequestHelpers, type: :request
 end

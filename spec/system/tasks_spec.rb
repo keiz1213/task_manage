@@ -89,7 +89,7 @@ RSpec.describe "Tasks" do
       visit root_path
       click_link '締切が近い順'
 
-      # 設定ファイル: spec/support/wait_for_css
+      # 定義: spec/support/system_helpers
       # 参考: https://qiita.com/johnslith/items/09bb0e5257e06a4bd948
       wait_for_css_appear('.task-card') do
         within(:test, 'task-list') do

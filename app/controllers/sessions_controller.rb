@@ -9,6 +9,7 @@ class SessionsController < ApplicationController
       reset_session
       params[:session][:remember_me] == '1' ? remember(user) : forget(user)
       login(user)
+      flash[:success] = 'ログインしました'
       redirect_to forwarding_url || tasks_path
     else
       flash.now[:danger] = 'パスワードまたはメールアドレスが間違っています'
@@ -18,6 +19,7 @@ class SessionsController < ApplicationController
 
   def destroy
     logout if logged_in?
+    flash[:success] = 'ログアウトしました'
     redirect_to login_path, status: :see_other
   end
 end

@@ -74,3 +74,4 @@ end
 gem "slim-rails"
 gem "html2slim"
 gem "kaminari"
+gem 'show_me_the_cookies'

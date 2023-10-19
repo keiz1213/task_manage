@@ -91,10 +91,10 @@ RSpec.describe TaskSearchForm do
         task1 = create(:task, :due_tomorrow_task, title: '青りんご', user: user)
         task2 = create(:task, :due_two_days_after_tomorrow_task, title: '毒りんご', user: user)
         task3 = create(:task, :due_day_after_tomorrow_task, title: 'りんごちゃん', user: user)
-        task4 = create(:task, title: 'バナナ', user: user)
+        create(:task, title: 'バナナ', user: user)
         search_form = build(:task_search_form, keyword: 'りんご', sort_by: 'deadline')
         result = search_form.search(user)
-  
+
         expect(user.tasks.count).to be 4
         expect(result.count).to be 3
         result.each do |task|
@@ -104,78 +104,78 @@ RSpec.describe TaskSearchForm do
         expect(result[1]).to eq task3
         expect(result[2]).to eq task2
       end
-  
+
       it 'キーワード検索の結果を優先順位が高い順にソートできる' do
         task1 = create(:task, title: '青りんご', user: user, priority: 'mid')
         task2 = create(:task, title: '毒りんご', user: user, priority: 'high')
         task3 = create(:task, title: 'りんごちゃん', user: user, priority: 'low')
-        task4 = create(:task, title: 'バナナ', user: user)
-  
+        create(:task, title: 'バナナ', user: user)
+
         search_form = build(:task_search_form, keyword: 'りんご', sort_by: 'high')
         result = search_form.search(user)
-  
+
         expect(user.tasks.count).to be 4
         expect(result.count).to be 3
         expect(result[0]).to eq task2
         expect(result[1]).to eq task1
         expect(result[2]).to eq task3
       end
-  
+
       it 'キーワード検索の結果を優先順位が低い順にソートできる' do
         task1 = create(:task, title: '青りんご', user: user, priority: 'mid')
         task2 = create(:task, title: '毒りんご', user: user, priority: 'high')
         task3 = create(:task, title: 'りんごちゃん', user: user, priority: 'low')
-        task4 = create(:task, title: 'バナナ', user: user)
-  
+        create(:task, title: 'バナナ', user: user)
+
         search_form = build(:task_search_form, keyword: 'りんご', sort_by: 'low')
         result = search_form.search(user)
-  
+
         expect(user.tasks.count).to be 4
         expect(result.count).to be 3
         expect(result[0]).to eq task3
         expect(result[1]).to eq task1
         expect(result[2]).to eq task2
       end
-  
+
       it 'ステータス検索の結果を締切が近い順にソートできる' do
         task1 = create(:task, :due_tomorrow_task, user: user, state: 'in_progress')
-        task2 = create(:task, :due_day_after_tomorrow_task, user: user, state: 'not_started')
-        task3 = create(:task, :due_two_days_after_tomorrow_task, user: user, state: 'in_progress')
+        task2 = create(:task, :due_two_days_after_tomorrow_task, user: user, state: 'in_progress')
+        create(:task, :due_day_after_tomorrow_task, user: user, state: 'not_started')
         search_form = build(:task_search_form, state: 'in_progress', sort_by: 'deadline')
         result = search_form.search(user)
-  
+
         expect(user.tasks.count).to be 3
         expect(result.count).to be 2
         expect(result[0]).to eq task1
-        expect(result[1]).to eq task3
+        expect(result[1]).to eq task2
       end
-  
-      it 'ステータス検索の結果を優先順位が高い順にソートできる' do
+
+      it 'ステータス検索の結果を重要度が高い順にソートできる' do
         task1 = create(:task, user: user, state: 'in_progress', priority: 'low')
-        task2 = create(:task, user: user, state: 'done', priority: 'high')
-        task3 = create(:task, user: user, state: 'in_progress', priority: 'mid')
-  
+        task2 = create(:task, user: user, state: 'in_progress', priority: 'mid')
+        create(:task, user: user, state: 'done', priority: 'high')
+
         search_form = build(:task_search_form, state: 'in_progress', sort_by: 'high')
         result = search_form.search(user)
-  
+
         expect(user.tasks.count).to be 3
         expect(result.count).to be 2
-        expect(result[0]).to eq task3
+        expect(result[0]).to eq task2
         expect(result[1]).to eq task1
       end
-  
-      it 'ステータス検索の結果を優先順位が低い順にソートできる' do
+
+      it 'ステータス検索の結果を重要度が低い順にソートできる' do
         task1 = create(:task, user: user, state: 'in_progress', priority: 'low')
-        task2 = create(:task, user: user, state: 'done', priority: 'high')
-        task3 = create(:task, user: user, state: 'in_progress', priority: 'mid')
-  
+        task2 = create(:task, user: user, state: 'in_progress', priority: 'mid')
+        create(:task, user: user, state: 'done', priority: 'high')
+
         search_form = build(:task_search_form, state: 'in_progress', sort_by: 'low')
         result = search_form.search(user)
-  
+
         expect(user.tasks.count).to be 3
         expect(result.count).to be 2
         expect(result[0]).to eq task1
-        expect(result[1]).to eq task3
+        expect(result[1]).to eq task2
       end
     end
   end

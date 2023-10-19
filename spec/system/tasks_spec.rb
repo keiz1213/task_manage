@@ -161,6 +161,8 @@ RSpec.describe "Tasks" do
 
         fill_in 'キーワード', with: 'りんご'
         click_button '検索'
+        # TODO
+        sleep(1)
         wait_for_css_appear('.task-card') do
           within(:test, 'task-list') do
             task_titles = all(:test, 'task-title')
@@ -178,6 +180,8 @@ RSpec.describe "Tasks" do
 
         fill_in 'キーワード', with: '桃'
         click_button '検索'
+        # TODO
+        sleep(1)
         wait_for_css_appear('.task-card') do
           task_titles = []
           within(:test, 'task-list') do
@@ -203,6 +207,8 @@ RSpec.describe "Tasks" do
 
         login_as(user)
         click_link '未着手のタスク'
+        # TODO
+        sleep(1)
         wait_for_css_appear('.task-card') do
           within(:test, 'task-list') do
             task_titles = all(:test, 'task-title')
@@ -224,6 +230,8 @@ RSpec.describe "Tasks" do
 
         login_as(user)
         click_link '着手しているタスク'
+        # TODO
+        sleep(1)
         wait_for_css_appear('.task-card') do
           within(:test, 'task-list') do
             task_titles = all(:test, 'task-title')
@@ -245,6 +253,8 @@ RSpec.describe "Tasks" do
 
         login_as(user)
         click_link '完了したタスク'
+        # TODO
+        sleep(1)
         wait_for_css_appear('.task-card') do
           within(:test, 'task-list') do
             task_titles = all(:test, 'task-title')
@@ -265,7 +275,7 @@ RSpec.describe "Tasks" do
           task1 = create(:task, :due_tomorrow_task, title: '青りんご', user: user)
           task2 = create(:task, :due_two_days_after_tomorrow_task, title: '毒りんご', user: user)
           task3 = create(:task, :due_day_after_tomorrow_task, title: 'りんごちゃん', user: user)
-          task4 = create(:task, title: 'バナナ', user: user)
+          create(:task, title: 'バナナ', user: user)
           login_as(user)
           fill_in 'キーワード', with: 'りんご'
           click_button '検索'
@@ -287,12 +297,12 @@ RSpec.describe "Tasks" do
             end
           end
         end
-  
+
         it '検索結果を重要度の高い順に並び替えできる' do
           task1 = create(:task, title: '青りんご', user: user, priority: 'mid')
           task2 = create(:task, title: '毒りんご', user: user, priority: 'high')
           task3 = create(:task, title: 'りんごちゃん', user: user, priority: 'low')
-          task4 = create(:task, title: 'バナナ', user: user)
+          create(:task, title: 'バナナ', user: user)
           login_as(user)
           fill_in 'キーワード', with: 'りんご'
           click_button '検索'
@@ -314,12 +324,12 @@ RSpec.describe "Tasks" do
             end
           end
         end
-  
+
         it '検索結果を重要度の低い順に並び替えできる' do
           task1 = create(:task, title: '青りんご', user: user, priority: 'mid')
           task2 = create(:task, title: '毒りんご', user: user, priority: 'high')
           task3 = create(:task, title: 'りんごちゃん', user: user, priority: 'low')
-          task4 = create(:task, title: 'バナナ', user: user)
+          create(:task, title: 'バナナ', user: user)
           login_as(user)
           fill_in 'キーワード', with: 'りんご'
           click_button '検索'
@@ -345,12 +355,12 @@ RSpec.describe "Tasks" do
 
       describe '絞り込み' do
         it '検索結果をステータスで絞り込める' do
-          task1 = create(:task, title: '青りんご', state: 'done', user: user)
-          task2 = create(:task, title: '毒りんご', state: 'not_started', user: user)
-          task3 = create(:task, title: 'りんごの木', state: 'not_started', user: user)
-          task4 = create(:task, title: '私はりんごが好きです', state: 'in_progress', user: user)
-          task5 = create(:task, title: 'パイナップル', state: 'in_progress', user: user)
-          task6 = create(:task, title: 'ぶどう', state: 'in_progress', user: user)
+          create(:task, title: '青りんご', state: 'done', user: user)
+          create(:task, title: '毒りんご', state: 'not_started', user: user)
+          create(:task, title: 'りんごの木', state: 'not_started', user: user)
+          create(:task, title: '私はりんごが好きです', state: 'in_progress', user: user)
+          create(:task, title: 'パイナップル', state: 'in_progress', user: user)
+          create(:task, title: 'ぶどう', state: 'in_progress', user: user)
           login_as(user)
           fill_in 'キーワード', with: 'りんご'
           click_button '検索'
@@ -374,9 +384,9 @@ RSpec.describe "Tasks" do
           task1 = create(:task, title: '青りんご', state: 'not_started', deadline: 2.days.from_now, user: user)
           task2 = create(:task, title: '毒りんご', state: 'not_started', deadline: 1.day.from_now, user: user)
           task3 = create(:task, title: 'りんごの木', state: 'not_started', deadline: 3.days.from_now, user: user)
-          task4 = create(:task, title: '私はりんごが好きです', state: 'in_progress', user: user)
-          task5 = create(:task, title: 'りんごちゃん', state: 'in_progress', user: user)
-          task6 = create(:task, title: 'ぶどう', state: 'done', user: user)
+          create(:task, title: '私はりんごが好きです', state: 'in_progress', user: user)
+          create(:task, title: 'りんごちゃん', state: 'in_progress', user: user)
+          create(:task, title: 'ぶどう', state: 'done', user: user)
           login_as(user)
           fill_in 'キーワード', with: 'りんご'
           click_button '検索'
@@ -401,15 +411,15 @@ RSpec.describe "Tasks" do
             end
           end
         end
-  
+
         it '検索結果をステータスで絞り込み、それを重要度で並び替えできる' do
-          task1 = create(:task, title: '青りんご', state: 'done', priority: 'mid', user: user)
-          task2 = create(:task, title: '毒りんご', state: 'not_started', priority: 'low', user: user)
-          task3 = create(:task, title: 'りんごの木', state: 'not_started', priority: 'high', user: user)
-          task4 = create(:task, title: '私はりんごが好きです', state: 'not_started', priority: 'mid', user: user)
-          task5 = create(:task, title: 'パイナップル', state: 'in_progress', priority: 'low', user: user)
-          task6 = create(:task, title: 'ぶどう', state: 'in_progress', priority: 'low', user: user)
-  
+          task1 = create(:task, title: '毒りんご', state: 'not_started', priority: 'low', user: user)
+          task2 = create(:task, title: 'りんごの木', state: 'not_started', priority: 'high', user: user)
+          task3 = create(:task, title: '私はりんごが好きです', state: 'not_started', priority: 'mid', user: user)
+          create(:task, title: '青りんご', state: 'done', priority: 'mid', user: user)
+          create(:task, title: 'パイナップル', state: 'in_progress', priority: 'low', user: user)
+          create(:task, title: 'ぶどう', state: 'in_progress', priority: 'low', user: user)
+
           login_as(user)
           fill_in 'キーワード', with: 'りんご'
           click_button '検索'
@@ -428,9 +438,9 @@ RSpec.describe "Tasks" do
               task_titles.each do |el|
                 expect(el.text).to match(/毒りんご|りんごの木|私はりんごが好きです/)
               end
-              expect(task_titles[0].text).to eq task3.title
-              expect(task_titles[1].text).to eq task4.title
-              expect(task_titles[2].text).to eq task2.title
+              expect(task_titles[0].text).to eq task2.title
+              expect(task_titles[1].text).to eq task3.title
+              expect(task_titles[2].text).to eq task1.title
             end
           end
         end

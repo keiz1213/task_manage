@@ -4,14 +4,14 @@ RSpec.describe User do
   describe 'クラスメソッド' do
     describe 'digest' do
       it '文字列をハッシュ化する' do
-        digest = User.digest('foo')
+        digest = described_class.digest('foo')
         expect(digest).to be_a BCrypt::Password
       end
     end
 
     describe 'new_token' do
       it 'ランダムな文字列を返す' do
-        token = User.new_token
+        token = described_class.new_token
         expect(token).not_to be_nil
         expect(token).to be_a String
       end
@@ -53,13 +53,13 @@ RSpec.describe User do
       it 'remember_tokenの検証が成功するとtrueを返す' do
         user = create(:user)
         user.remember
-        expect(user.authenticated?(user.remember_token)).to be_truthy
+        expect(user).to be_authenticated(user.remember_token)
       end
 
       it 'remember_tokenの検証が失敗するとfalseを返す' do
         user = create(:user)
         user.remember
-        expect(user.authenticated?('foo')).to be_falsey
+        expect(user).not_to be_authenticated('foo')
       end
     end
 

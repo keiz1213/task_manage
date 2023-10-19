@@ -11,9 +11,9 @@ FactoryBot.define do
     end
 
     trait :with_tasks_for_3_days do
-      after(:create) { |user| create(:task, user: user)}
-      after(:create) { |user| create(:task, :yesterday_task, user: user)}
-      after(:create) { |user| create(:task, :day_before_yesterday_task, user: user)}
+      after(:create) { |user| create(:task, user: user) }
+      after(:create) { |user| create(:task, :yesterday_task, user: user) }
+      after(:create) { |user| create(:task, :day_before_yesterday_task, user: user) }
     end
 
     trait :with_tasks_separate_due_dates do

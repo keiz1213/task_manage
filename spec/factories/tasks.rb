@@ -5,7 +5,7 @@ FactoryBot.define do
     priority { 'low' }
     sequence(:deadline) { |n| n.weeks.from_now }
     state { 'not_started' }
-    association :user
+    user
 
     trait :yesterday_task do
       title { 'yesterday_task' }

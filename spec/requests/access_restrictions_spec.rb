@@ -48,6 +48,7 @@ RSpec.describe 'Access restrictions' do
       expect(is_logged_in?).to be_falsy
       expect(response).to have_http_status(303)
       expect(response).to redirect_to login_path
+      expect(flash[:danger]).to eq 'ログインしてください'
     end
 
     it 'タスク詳細にアクセスするとログインページにリダイレクトされる' do
@@ -55,6 +56,7 @@ RSpec.describe 'Access restrictions' do
       expect(is_logged_in?).to be_falsy
       expect(response).to have_http_status(303)
       expect(response).to redirect_to login_path
+      expect(flash[:danger]).to eq 'ログインしてください'
     end
 
     it 'タスク編集にアクセスするとログインページにリダイレクトされる' do
@@ -62,6 +64,7 @@ RSpec.describe 'Access restrictions' do
       expect(is_logged_in?).to be_falsy
       expect(response).to have_http_status(303)
       expect(response).to redirect_to login_path
+      expect(flash[:danger]).to eq 'ログインしてください'
     end
   end
 end

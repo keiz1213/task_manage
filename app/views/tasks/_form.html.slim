@@ -25,6 +25,6 @@
   .form-group.mb-3
     = f.label :deadline, class: 'control-label'
     <br>
-    = f.datetime_local_field :deadline, class: 'form-control', id: 'task_deadline'
+    = f.datetime_local_field :deadline, class: 'form-control', id: 'task_deadline', step: 'any'
   = f.hidden_field :state, value: 'not_started'
   = f.submit nil, class: 'btn btn-primary'

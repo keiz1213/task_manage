@@ -64,4 +64,5 @@ RSpec.configure do |config|
   config.include FactoryBot::Syntax::Methods
   config.include SystemHelpers, type: :system
   config.include ShowMeTheCookies, type: :system
+  config.include RequestHelpers, type: :request
 end

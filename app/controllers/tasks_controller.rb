@@ -1,6 +1,6 @@
 class TasksController < ApplicationController
-  before_action :set_task, only: %i[show edit update destroy update_state]
   before_action :logged_in_user
+  before_action :set_task, only: %i[show edit update destroy update_state]
 
   def index
     @tasks = @search_form.search(current_user).page(params[:page])
@@ -50,7 +50,7 @@ class TasksController < ApplicationController
   private
 
   def set_task
-    @task = current_user.tasks.find_by(id: params[:id])
+    @task = current_user&.tasks&.find_by(id: params[:id])
     redirect_to tasks_path, status: :see_other if @task.nil?
   end
 

@@ -14,7 +14,7 @@ html
         .row
           .px-0(style="width: 250px")
           .px-0.position-fixed(style="width: 250px")
-            = render partial: 'sidebar'
+            = render partial: 'sidebar', locals: { user: @user }
           .col.mb-4.ms-4
             - if flash.any?
               - flash.each do |message_type, message|

@@ -2,3 +2,7 @@
   .d-flex.align-items-center.justify-content-center
     = link_to 'TaskManage', root_path, class: "fs-3 text-decoration-none"
   hr
+
+  .mb-4
+    .fs-5.text-center.mb-1 ユーザー登録
+    . = render partial: 'form', locals: { user: user }

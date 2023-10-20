@@ -1,5 +1,4 @@
 class TasksController < ApplicationController
-  before_action :logged_in_user
   before_action :set_task, only: %i[show edit update destroy update_state]
 
   def index
@@ -56,13 +55,5 @@ class TasksController < ApplicationController
 
   def task_params
     params.require(:task).permit(:title, :description, :priority, :deadline, :state)
-  end
-
-  def logged_in_user
-    unless logged_in?
-      store_location
-      flash[:danger] = 'ログインしてください'
-      redirect_to login_url, status: :see_other
-    end
   end
 end

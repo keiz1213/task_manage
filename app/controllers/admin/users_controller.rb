@@ -1,4 +1,5 @@
 class Admin::UsersController < ApplicationController
+  skip_before_action :set_search_form
   before_action :set_user, only: %i[show edit update destroy]
 
   def index

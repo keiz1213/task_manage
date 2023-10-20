@@ -10,7 +10,7 @@ RSpec.describe "Admin::Users" do
   describe 'ユーザーの管理ページ' do
     it 'ユーザーの管理ページが表示される' do
       click_link 'ユーザー管理へ'
-  
+
       expect(page).to have_content('Admin')
       expect(page).to have_content('タスク管理へ')
       expect(page).not_to have_content('ユーザー管理へ')
@@ -43,6 +43,7 @@ RSpec.describe "Admin::Users" do
         expect(page).to have_content('田中')
       end
     end
+
     describe 'ユーザーの詳細' do
       it '管理者はユーザーの詳細を確認できる' do
         user = create(:user, name: '中村')
@@ -57,6 +58,7 @@ RSpec.describe "Admin::Users" do
         expect(page).to have_content('削除')
       end
     end
+
     describe 'ユーザーの更新' do
       it '管理者はユーザーを更新できる' do
         user = create(:user, name: '中村')
@@ -75,6 +77,7 @@ RSpec.describe "Admin::Users" do
         expect(page).to have_content('nakamura@example.com')
       end
     end
+
     describe 'ユーザーの削除' do
       it '管理者はユーザーを削除できる' do
         user = create(:user, name: '中村')

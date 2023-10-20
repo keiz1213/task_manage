@@ -1,11 +1,8 @@
 Rails.application.routes.draw do
-  namespace :admin do
-    get 'users/new'
-    get 'users/edit'
-    get 'users/show'
-    get 'users/index'
-  end
   root to: 'tasks#index'
+  namespace :admin do
+    resources :users
+  end
   resources :tasks do
     member do
       patch :update_state

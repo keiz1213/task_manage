@@ -12,6 +12,7 @@ class Admin::UsersController < ApplicationController
   end
 
   def edit
+    @user = User.find(params[:id])
   end
 
   def create
@@ -22,6 +23,16 @@ class Admin::UsersController < ApplicationController
       redirect_to admin_users_path
     else
       render :new, status: :unprocessable_entity
+    end
+  end
+
+  def update
+    @user = User.find(params[:id])
+    if @user.update(user_params)
+      flash[:success] = "ユーザー: #{@user.name}を更新しました"
+      redirect_to admin_users_path
+    else
+      render :edit, status: :unprocessable_entity
     end
   end
 

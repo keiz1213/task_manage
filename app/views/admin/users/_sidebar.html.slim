@@ -4,5 +4,4 @@
   hr
 
   .mb-4
-    .fs-5.text-center.mb-1 ユーザー登録
-    . = render partial: 'form', locals: { user: user }
+    = link_to 'ユーザーを登録する', new_admin_user_path

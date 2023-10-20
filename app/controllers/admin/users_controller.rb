@@ -1,10 +1,13 @@
 class Admin::UsersController < ApplicationController
   def index
-    @user = User.new
     @users = User.all
   end
 
   def show
+  end
+
+  def new
+    @user = User.new
   end
 
   def edit
@@ -17,7 +20,7 @@ class Admin::UsersController < ApplicationController
       flash[:success] = "ユーザー: #{@user.name}を登録しました"
       redirect_to admin_users_path
     else
-      render :index, status: :unprocessable_entity
+      render :new, status: :unprocessable_entity
     end
   end
 

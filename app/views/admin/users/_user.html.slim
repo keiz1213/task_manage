@@ -1,7 +1,7 @@
 .card.my-3.mx-auto.task-card
-  .card-header
+  .card-header.bg-primary
     .d-flex.justify-content-between
-      h5.card-title.my-auto = link_to user.name, [:admin, user], data: { test: 'user-title' }, class: "text-decoration-none"
+      h5.card-title.my-auto = link_to user.name, [:admin, user], data: { test: 'user-title' }, class: "text-decoration-none link-light"
   .card-body
     .d-flex.justify-content-between
       = "登録日: #{l(user.created_at, format: :long)}"

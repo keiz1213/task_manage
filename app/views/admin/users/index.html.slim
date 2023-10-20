@@ -1,2 +1,3 @@
-h1 Admin::Users#index
-p Find me in app/views/admin/users/index.html.slim
+.row.row-cols-3 data-test="user-list"
+  - @users.each do |user|
+    .col = render partial: 'user', locals: { user: user }

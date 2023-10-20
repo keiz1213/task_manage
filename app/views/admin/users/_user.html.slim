@@ -1,0 +1,10 @@
+.card.my-3.mx-auto.task-card
+  .card-header
+    .d-flex.justify-content-between
+      h5.card-title.my-auto = link_to user.name, [:admin, user], data: { test: 'user-title' }, class: "text-decoration-none"
+  .card-body
+    .d-flex.justify-content-between
+      = "登録日: #{l(user.created_at, format: :long)}"
+      .
+        = link_to '編集', edit_admin_user_path(user), class: 'mx-1 text-decoration-none'
+        = link_to '削除', [:admin, user], data: { turbo_method: :delete, turbo_confirm: '本当に削除しますか？' }, class: 'mx-1 text-decoration-none'

@@ -1,2 +1,16 @@
-h1 Admin::Users#show
-p Find me in app/views/admin/users/show.html.slim
+table.table
+    tbody
+      tr
+        th 名前
+        td = @user.name
+      tr
+        th email
+        td = simple_format(h(@user.email), {}, sanitaize: false )
+      tr
+        th 登録日時
+        td = l(@user.created_at, format: :long)
+      tr
+        th 更新日時
+        td = l(@user.updated_at, format: :long)
+= link_to '編集', edit_admin_user_path(@user), class: 'btn btn-primary mx-1'
+= link_to '削除', [:admin, @user], data: { turbo_method: :delete, turbo_confirm: '本当に削除しますか？' }, class: 'btn btn-primary mx-1'

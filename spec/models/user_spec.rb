@@ -72,5 +72,23 @@ RSpec.describe User do
         expect(user.remember_digest).to be_nil
       end
     end
+
+    describe 'must_not_destroy_last_admin' do
+      it '最後の管理者ユーザーは削除できない' do
+        first_admin_user = create(:user)
+        last_admin_user = create(:user)
+        non_admin_user = create(:user, admin: false)
+        expect(described_class.where(admin: true).count).to be 2
+
+        first_admin_user.destroy
+        last_admin_user.destroy
+        non_admin_user.destroy
+
+        expect(first_admin_user.errors).to be_empty
+        expect(non_admin_user.errors).to be_empty
+        expect(last_admin_user.errors).not_to be_empty
+        expect(last_admin_user.errors.full_messages[0]).to eq '管理者ユーザーは最低一人必要です'
+      end
+    end
   end
 end

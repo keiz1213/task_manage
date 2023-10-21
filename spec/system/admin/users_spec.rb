@@ -3,21 +3,28 @@ require 'rails_helper'
 RSpec.describe "Admin::Users" do
   let(:admin_user) { create(:user) }
 
-  before do
-    login_as(admin_user)
-  end
-
   describe 'ユーザーの管理ページ' do
     it 'ユーザーの管理ページが表示される' do
+      login_as(admin_user)
       click_link 'ユーザー管理へ'
 
       expect(page).to have_content('Admin')
       expect(page).to have_content('タスク管理へ')
+    end
+
+    it '一般ユーザーでは管理者ページへのリンクが表示されない' do
+      non_admin_user = create(:user, admin: false)
+      login_as(non_admin_user)
+
       expect(page).not_to have_content('ユーザー管理へ')
     end
   end
 
   describe 'CRUD' do
+    before do
+      login_as(admin_user)
+    end
+
     describe 'ユーザーの作成' do
       it '管理者はユーザーの作成ができる' do
         click_link 'ユーザー管理へ'
@@ -53,7 +60,7 @@ RSpec.describe "Admin::Users" do
 
     describe 'ユーザーの詳細' do
       it '管理者はユーザーの詳細を確認できる' do
-        user = create(:user, name: '中村')
+        user = create(:user, name: '中村', admin: false)
         create_list(:task, 3, user: user)
         click_link 'ユーザー管理へ'
         click_link user.name
@@ -62,6 +69,7 @@ RSpec.describe "Admin::Users" do
         expect(task_titles.count).to be 3
         expect(page).to have_content(user.name)
         expect(page).to have_content(user.email)
+        expect(page).to have_content('一般')
         expect(page).to have_content(I18n.l(user.created_at, format: :long))
         expect(page).to have_content(I18n.l(user.updated_at, format: :long))
         expect(page).to have_content('編集')
@@ -100,6 +108,19 @@ RSpec.describe "Admin::Users" do
           end
           expect(page).to have_content("ユーザー: #{user.name}を削除しました")
         }.to change(User, :count).by(-1)
+      end
+
+      it '最後の管理者は削除できない' do
+        click_link 'ユーザー管理へ'
+        click_link admin_user.name
+
+        expect(User.where(admin: true).count).to be 1
+        expect {
+          accept_confirm do
+            click_link '削除'
+          end
+          expect(page).to have_content("管理者ユーザーは最低一人必要です")
+        }.not_to change(User, :count)
       end
     end
   end

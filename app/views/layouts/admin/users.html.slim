@@ -14,15 +14,14 @@ html
         .row
           .px-0(style="width: 250px")
           .px-0.position-fixed(style="width: 250px")
-            = render partial: 'sidebar', locals: { search_form: @search_form }
+            = render partial: 'sidebar'
           .col.ps-0.pe-4
             .d-flex.justify-content-end.py-2.my-2
-              = link_to 'ユーザー管理へ', admin_users_path, class: 'text-decoration-none mx-2'
+              = link_to 'タスク管理へ', tasks_path, class: 'text-decoration-none mx-2'
               = link_to 'ログアウト', logout_path, data: { turbo_method: :delete }, class: 'text-decoration-none mx-2'
             .col.mb-4.ms-4
               - if flash.any?
                 - flash.each do |message_type, message|
                   .col.mb-4.ms-4
-                    = content_tag(:div, message, class: "alert alert-#{message_type}")
+                    = content_tag(:div, message, class: "alert alert-#{message_type}") 
               = yield
-

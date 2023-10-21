@@ -36,8 +36,8 @@ RSpec.describe "Admin::Users" do
       it '管理者はユーザーの一覧を確認できる' do
         user1 = create(:user, name: '中村')
         user2 = create(:user, name: '田中')
-        3.times { create(:task, user: user1) }
-        5.times { create(:task, user: user2) }
+        create_list(:task, 3, user: user1)
+        create_list(:task, 5, user: user2)
         click_link 'ユーザー管理へ'
 
         task_counts = all(:test, 'task-count')
@@ -54,7 +54,7 @@ RSpec.describe "Admin::Users" do
     describe 'ユーザーの詳細' do
       it '管理者はユーザーの詳細を確認できる' do
         user = create(:user, name: '中村')
-        3.times {|i| create(:task, title: "task-#{i}", user: user)}
+        create_list(:task, 3, user: user)
         click_link 'ユーザー管理へ'
         click_link user.name
         task_titles = all(:test, 'task-title')

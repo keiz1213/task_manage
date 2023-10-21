@@ -7,6 +7,9 @@ table.table
         th email
         td = simple_format(h(@user.email), {}, sanitaize: false )
       tr
+        th ロール
+        td = @user.admin? ? '管理者' : '一般'
+      tr
         th 登録日時
         td = l(@user.created_at, format: :long)
       tr

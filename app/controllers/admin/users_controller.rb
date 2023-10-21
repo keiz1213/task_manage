@@ -1,5 +1,6 @@
 class Admin::UsersController < ApplicationController
   skip_before_action :set_search_form
+  before_action :require_admin
   before_action :set_user, only: %i[show edit update destroy]
 
   def index
@@ -37,18 +38,25 @@ class Admin::UsersController < ApplicationController
   end
 
   def destroy
-    @user.destroy
-    flash[:success] = "ユーザー: #{@user.name}を削除しました"
+    if @user.destroy
+      flash[:success] = "ユーザー: #{@user.name}を削除しました"
+    else
+      flash[:danger] = @user.errors.full_messages[0]
+    end
     redirect_to admin_users_path
   end
 
   private
 
   def user_params
-    params.require(:user).permit(:name, :email, :password, :password_confirmation)
+    params.require(:user).permit(:name, :email, :password, :password_confirmation, :admin)
   end
 
   def set_user
     @user = User.find(params[:id])
+  end
+
+  def require_admin
+    redirect_to tasks_path unless current_user.admin?
   end
 end

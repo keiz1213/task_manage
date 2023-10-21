@@ -16,4 +16,8 @@
   .form-group.mb-3
     = f.label :password_confirmation
     = f.password_field :password_confirmation, class: 'form-control'
+  .form-check.mb-3
+    = f.label :admin, class: 'form-check-label' do
+      = f.check_box :admin, class: 'form-check-input'
+      | 管理者権限
   = f.submit nil, class: 'btn btn-primary'

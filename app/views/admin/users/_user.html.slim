@@ -3,6 +3,7 @@
     .d-flex.justify-content-between
       h5.card-title.my-auto = link_to user.name, [:admin, user], data: { test: 'user-title' }, class: "text-decoration-none link-light"
   .card-body
+    span data-test="task-count" = "タスク数: #{user.tasks.length}"
     .d-flex.justify-content-between
       = "登録日: #{l(user.created_at, format: :long)}"
       .

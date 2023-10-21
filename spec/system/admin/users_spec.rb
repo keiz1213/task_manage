@@ -34,10 +34,17 @@ RSpec.describe "Admin::Users" do
 
     describe 'ユーザーの一覧' do
       it '管理者はユーザーの一覧を確認できる' do
-        create(:user, name: '中村')
-        create(:user, name: '田中')
+        user1 = create(:user, name: '中村')
+        user2 = create(:user, name: '田中')
+        3.times { create(:task, user: user1) }
+        5.times { create(:task, user: user2) }
         click_link 'ユーザー管理へ'
 
+        task_counts = all(:test, 'task-count')
+        task_counts.each do |task_count|
+          # 0はadmin_userの分
+          expect(task_count.text).to match(/0|3|5/)
+        end
         expect(page).to have_content('test-user')
         expect(page).to have_content('中村')
         expect(page).to have_content('田中')

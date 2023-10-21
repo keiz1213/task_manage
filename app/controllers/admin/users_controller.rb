@@ -40,11 +40,10 @@ class Admin::UsersController < ApplicationController
   def destroy
     if @user.destroy
       flash[:success] = "ユーザー: #{@user.name}を削除しました"
-      redirect_to admin_users_path
     else
       flash[:danger] = @user.errors.full_messages[0]
-      redirect_to admin_users_path
     end
+    redirect_to admin_users_path
   end
 
   private

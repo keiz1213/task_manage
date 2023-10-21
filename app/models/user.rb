@@ -43,7 +43,7 @@ class User < ApplicationRecord
   private
 
   def must_not_destroy_last_admin
-    if self.admin? && User.where(admin: true).count == 1
+    if admin? && User.where(admin: true).count == 1
       errors.add(:base, '管理者ユーザーは最低一人必要です')
       throw(:abort)
     end

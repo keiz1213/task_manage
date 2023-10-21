@@ -3,7 +3,7 @@
     .d-flex.justify-content-between
       h5.card-title.my-auto = link_to user.name, [:admin, user], data: { test: 'user-title' }, class: "text-decoration-none link-light"
       - if user.admin?
-        span.badge.rounded-pill.my-auto.py-2.text-bg-light
+        span.badge.rounded-pill.my-auto.text-bg-light
           | 管理者
   .card-body
     span data-test="task-count" = "タスク数: #{user.tasks.length}"

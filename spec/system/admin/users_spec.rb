@@ -54,9 +54,12 @@ RSpec.describe "Admin::Users" do
     describe 'ユーザーの詳細' do
       it '管理者はユーザーの詳細を確認できる' do
         user = create(:user, name: '中村')
+        3.times {|i| create(:task, title: "task-#{i}", user: user)}
         click_link 'ユーザー管理へ'
         click_link user.name
+        task_titles = all(:test, 'task-title')
 
+        expect(task_titles.count).to be 3
         expect(page).to have_content(user.name)
         expect(page).to have_content(user.email)
         expect(page).to have_content(I18n.l(user.created_at, format: :long))

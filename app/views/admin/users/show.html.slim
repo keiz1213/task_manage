@@ -14,3 +14,6 @@ table.table
         td = l(@user.updated_at, format: :long)
 = link_to '編集', edit_admin_user_path(@user), class: 'btn btn-primary mx-1'
 = link_to '削除', [:admin, @user], data: { turbo_method: :delete, turbo_confirm: '本当に削除しますか？' }, class: 'btn btn-primary mx-1'
+.row.row-cols-3 data-test="task-list"
+  - @user.tasks.each do |task|
+    .col = render partial: 'tasks/task', locals: { task: task }

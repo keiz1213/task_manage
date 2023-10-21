@@ -1,5 +1,6 @@
 class Admin::UsersController < ApplicationController
   skip_before_action :set_search_form
+  before_action :require_admin
   before_action :set_user, only: %i[show edit update destroy]
 
   def index
@@ -50,5 +51,9 @@ class Admin::UsersController < ApplicationController
 
   def set_user
     @user = User.find(params[:id])
+  end
+
+  def require_admin
+    redirect_to tasks_path unless current_user.admin?
   end
 end

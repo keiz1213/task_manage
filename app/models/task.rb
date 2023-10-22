@@ -34,14 +34,17 @@ class Task < ApplicationRecord
   end
 
   def save_tag(tag_list)
-    tag_list.each { |tag_name| tags.create(name: tag_name) }
-  end
-
-  def update_tag(tag_list)
     current_tags = tags.pluck(:name)
-    unless current_tags == tag_list
-      tags.destroy_all
-      save_tag(tag_list)
+    old_tags = current_tags - tag_list
+    new_tags = tag_list - current_tags
+
+    old_tags.each do |tag_name|
+      tags.delete Tag.find_by(name: tag_name)
+    end
+
+    new_tags.each do |tag_name|
+      new_task_tag = Tag.find_or_create_by(name: tag_name)
+      tags << new_task_tag
     end
   end
 

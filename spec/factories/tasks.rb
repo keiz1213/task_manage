@@ -61,5 +61,11 @@ FactoryBot.define do
       title { 'done_task' }
       state { 'done' }
     end
+
+    trait :with_tags do
+      after(:create) do |task|
+        3.times { create(:tagging, task: task, tag: create(:tag)) }
+      end
+    end
   end
 end

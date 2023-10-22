@@ -3,5 +3,6 @@ FactoryBot.define do
     keyword { '' }
     sort_by { '' }
     state { '' }
+    tag_name { '' }
   end
 end

@@ -7,12 +7,12 @@ class TaskSearchForm
   attribute :state, :string
 
   def sort_task(user)
-    tasks = user.tasks
+    tasks = user.tasks.preload(:tags)
     case sort_by
     when 'deadline'
       tasks.deadline
     when 'low'
-      tasks.low_priority_first
+      tasks.low_priority_first.
     when 'high'
       tasks.high_priority_first
     else

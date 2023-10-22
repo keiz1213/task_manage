@@ -5,6 +5,8 @@
       = priority_badge(task)
   .card-body
     = render partial: 'tasks/state', locals: { task: task }
+    - task.tags.each do |tag|
+      span.badge.rounded-pill.me-1.mb-1.text-bg-secondary = tag.name
     .d-flex.justify-content-between
       = "締め切り: " + l(task.deadline, format: :long)
       .

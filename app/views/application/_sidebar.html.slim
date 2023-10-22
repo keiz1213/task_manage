@@ -12,3 +12,6 @@
       = link_to_search_by_state('未着手のタスク', 'not_started', search_form)
       = link_to_search_by_state('着手しているタスク', 'in_progress', search_form)
       = link_to_search_by_state('完了したタスク', 'done', search_form)
+  .mb-4
+    - tag_names.each do |tag_name|
+      = link_to_search_by_tag_name(tag_name, search_form)

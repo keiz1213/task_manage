@@ -13,7 +13,7 @@ class TasksController < ApplicationController
   end
 
   def edit
-    @tag_names = @task.tags.pluck(:name).join(',')
+    @jointed_tag_names = @task.tags.pluck(:name).join(',')
   end
 
   def create

@@ -30,6 +30,6 @@
     = f.label :tag_name, class: 'control-label'
     label.form-text.mx-3
       | ※ タグをカンマ(,)区切りで複数登録できます
-    = f.text_field :tag_name, value: @tag_names, class: 'form-control'
+    = f.text_field :tag_name, value: @jointed_tag_names, class: 'form-control'
   = f.hidden_field :state, value: 'not_started'
   = f.submit nil, class: 'btn btn-primary'

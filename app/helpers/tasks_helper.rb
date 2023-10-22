@@ -36,12 +36,12 @@ module TasksHelper
     when 'done'
       classes << 'btn-outline-success'
     end
-    link_to text, tasks_path(search: { keyword: search_form.keyword, sort_by: search_form.sort_by, state: state }), method: 'get', class: classes
+    link_to text, tasks_path(search: { keyword: search_form.keyword, sort_by: search_form.sort_by, state: state, tag_name: search_form.tag_name }), method: 'get', class: classes
   end
 
   def link_to_search_by_tag_name(tag_name, search_form)
-    classes = %w[badge me-1 mb-1 text-bg-secondary text-decoration-none fs-6]
-    classes << 'active' if search_form.tag_name == tag_name
+    classes = %w[badge me-1 mb-1 text-decoration-none fs-6]
+    search_form.tag_name == tag_name ? classes << 'text-bg-primary' : classes << 'text-bg-secondary'
 
     link_to tag_name, tasks_path(search: { keyword: search_form.keyword, sort_by: search_form.sort_by, state: search_form.state, tag_name: tag_name }), method: 'get', class: classes
   end

@@ -34,7 +34,7 @@ class Task < ApplicationRecord
   end
 
   def save_tag(tag_list)
-    tag_list.each { |tag_name| tags.create(name: tag_name.strip) }
+    tag_list.each { |tag_name| tags.create(name: tag_name) }
   end
 
   def update_tag(tag_list)

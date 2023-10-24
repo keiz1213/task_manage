@@ -19,6 +19,6 @@ class ApplicationController < ActionController::Base
   private
 
   def search_params
-    params[:search].present? ? params.require(:search).permit(:keyword, :sort_by, :state) : {}
+    params[:search].present? ? params.require(:search).permit(:keyword, :sort_by, :state, :tag_name) : {}
   end
 end

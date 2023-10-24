@@ -13,12 +13,14 @@ class TasksController < ApplicationController
   end
 
   def edit
+    @jointed_tag_names = @task.tags.pluck(:name).join(',')
   end
 
   def create
     @task = current_user.tasks.new(task_params)
-
+    tag_list = Tag.build_tag_list(params[:task][:tag_name])
     if @task.save
+      @task.save_tag(tag_list)
       flash[:success] = "タスク: #{@task.title}を作成しました"
       redirect_to tasks_path
     else
@@ -27,7 +29,9 @@ class TasksController < ApplicationController
   end
 
   def update
+    tag_list = Tag.build_tag_list(params[:task][:tag_name])
     if @task.update(task_params)
+      @task.save_tag(tag_list)
       flash[:success] = "タスク: #{@task.title}を更新しました"
       redirect_to tasks_path
     else

@@ -1,5 +1,7 @@
 class Task < ApplicationRecord
   belongs_to :user
+  has_many :taggings, dependent: :destroy
+  has_many :tags, through: :taggings
   validates :title, presence: true, length: { maximum: 30 }
   validates :priority, presence: true
   validates :deadline, presence: true
@@ -13,6 +15,7 @@ class Task < ApplicationRecord
   scope :deadline, -> { order(deadline: :asc) }
   scope :high_priority_first, -> { order(priority: :desc) }
   scope :low_priority_first, -> { order(priority: :asc) }
+  scope :tag, ->(tag_name) { joins(:tags).where(name: tag_name) }
   scope :matches, ->(keyword) {
                     where("title LIKE ?", "%#{sanitize_sql_like(keyword)}%").or(where("description LIKE ?", "%#{sanitize_sql_like(keyword)}%"))
                   }
@@ -28,6 +31,21 @@ class Task < ApplicationRecord
       new_state = 'not_started'
     end
     update(state: new_state)
+  end
+
+  def save_tag(tag_list)
+    current_tags = tags.pluck(:name)
+    old_tags = current_tags - tag_list
+    new_tags = tag_list - current_tags
+
+    old_tags.each do |tag_name|
+      tags.delete Tag.find_by(name: tag_name)
+    end
+
+    new_tags.each do |tag_name|
+      new_task_tag = Tag.find_or_create_by(name: tag_name)
+      tags << new_task_tag
+    end
   end
 
   private

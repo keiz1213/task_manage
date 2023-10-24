@@ -5,9 +5,10 @@ class TaskSearchForm
   attribute :sort_by, :string
   attribute :keyword, :string
   attribute :state, :string
+  attribute :tag_name, :string
 
   def sort_task(user)
-    tasks = user.tasks
+    tasks = user.tasks.preload(:tags)
     case sort_by
     when 'deadline'
       tasks.deadline
@@ -31,10 +32,15 @@ class TaskSearchForm
     end
   end
 
+  def narrow_down_by_tag_name(sorted_tasks)
+    sorted_tasks.tag(tag_name)
+  end
+
   def search(user)
     sorted_tasks = sort_task(user)
     sorted_tasks = sorted_tasks.matches(keyword) if keyword.present?
     sorted_tasks = narrow_down_by_state(sorted_tasks) if state.present?
+    sorted_tasks = narrow_down_by_tag_name(sorted_tasks) if tag_name.present?
     sorted_tasks
   end
 end

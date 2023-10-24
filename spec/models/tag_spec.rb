@@ -6,9 +6,7 @@ RSpec.describe Tag do
       jointed_tag_names = 'foo,bar,baz'
       tag_list = described_class.build_tag_list(jointed_tag_names)
       expect(tag_list.count).to be 3
-      tag_list.each do |tag_name|
-        expect(tag_name).to match(/foo|bar|baz/)
-      end
+      expect(tag_list).to all(match(/foo|bar|baz/))
     end
 
     it 'カンマで区切られた文字列の先頭、末尾に空白がある場合削除する' do
@@ -16,8 +14,8 @@ RSpec.describe Tag do
       tag_list = described_class.build_tag_list(jointed_tag_names)
       expect(tag_list.count).to be 3
       tag_list.each do |tag_name|
-        expect(tag_name.start_with?(' ')).to be_falsey
-        expect(tag_name.end_with?(' ')).to be_falsey
+        expect(tag_name).not_to be_start_with(' ')
+        expect(tag_name).not_to be_end_with(' ')
       end
     end
 
@@ -25,9 +23,7 @@ RSpec.describe Tag do
       jointed_tag_names = 'foo,foo,baz'
       tag_list = described_class.build_tag_list(jointed_tag_names)
       expect(tag_list.count).to be 2
-      tag_list.each do |tag_name|
-        expect(tag_name).to match(/foo|baz/)
-      end
+      expect(tag_list).to all(match(/foo|baz/))
     end
   end
 end

@@ -7,7 +7,7 @@ FactoryBot.define do
     admin { true }
 
     trait :with_tagged_tasks do
-      after(:create) { |user| create(:task, :with_tags, user: user)}
+      after(:create) { |user| create(:task, :with_tags, user: user) }
     end
 
     trait :with_tasks_for_3_days do

@@ -12,12 +12,15 @@ RSpec.describe "Tasks" do
         fill_in '説明', with: 'test'
         choose '中'
         fill_in '締め切り', with: Time.mktime(2100, 1, 2, 3, 4)
+        fill_in 'Tag name', with: 'foo,bar'
         click_button '登録'
         expect(page).to have_content('タスク: test-taskを作成しました')
         expect(page).to have_content('test-task')
         expect(page).to have_content('重要度: 中')
         expect(page.find(:test, 'update-state').value).to eq '未着手'
-        expect(page).to have_content("締め切り: 2100/01/02 03:04")
+        expect(page).to have_content('締め切り: 2100/01/02 03:04')
+        expect(page).to have_content('foo')
+        expect(page).to have_content('bar')
       }.to change(Task, :count).by(1)
     end
 
@@ -59,30 +62,53 @@ RSpec.describe "Tasks" do
       expect {
         click_link task.title
         click_link '編集'
-        fill_in 'タイトル', with: 'foo'
+        fill_in 'タイトル', with: 'test'
         choose '高'
         fill_in '締め切り', with: Time.mktime(2200, 1, 2, 3, 4)
+        fill_in 'Tag name', with: 'hoge,piyo'
         click_button '更新する'
 
-        expect(page).to have_content('タスク: fooを更新しました')
-        expect(page).to have_content('foo')
+        expect(page).to have_content('タスク: testを更新しました')
+        expect(page).to have_content('test')
         expect(page).to have_content('重要度: 高')
         expect(page.find(:test, 'update-state').value).to eq '未着手'
         expect(page).to have_content('締め切り: 2200/01/02 03:04')
+        expect(page).to have_content('hoge')
+        expect(page).to have_content('piyo')
       }.not_to change(Task, :count)
     end
 
     it 'タスクの削除' do
-      user = create(:user)
-      task = create(:task, user: user)
+      user = create(:user, :with_tagged_tasks)
       login_as(user)
+      task_title = user.tasks[0].title
+      click_link task_title
+
+      expect {
+        accept_confirm do
+          click_link '削除'
+        end
+        expect(page).to have_content("タスク: #{task_title}を削除しました")
+      }.to change(Task, :count).by(-1)
+    end
+
+    it 'タスクが削除されるとそのタスクとタグのリレーションも削除されること' do
+      user = create(:user, :with_tagged_tasks)
+      task = user.tasks[0]
+      task_tag_names = task.tags.map(&:name)
+      tag_count = task_tag_names.size
+      login_as(user)
+      click_link task.title
 
       expect {
         accept_confirm do
           click_link '削除'
         end
         expect(page).to have_content("タスク: #{task.title}を削除しました")
-      }.to change(Task, :count).by(-1)
+        task_tag_names.each do |tag_name|
+          expect(page).not_to have_content(tag_name)
+        end
+      }.to change(Tagging, :count).by(-tag_count)
     end
   end
 
@@ -267,7 +293,25 @@ RSpec.describe "Tasks" do
       end
     end
 
-    describe 'キーワード検索の結果のソートと絞り込み' do
+    describe 'タグ検索' do
+      it 'タグでタスクを検索できる' do
+        user = create(:user)
+        create_list(:task, 3, user: user)
+        create(:tagging, task: user.tasks[0], tag: create(:tag, name: 'foo'))
+        create(:tagging, task: user.tasks[1], tag: create(:tag, name: 'bar'))
+        create(:tagging, task: user.tasks[2], tag: create(:tag, name: 'baz'))
+        login_as(user)
+
+        expect(all(:test, 'task-title').count).to be 3
+
+        click_link 'foo'
+        #TODO
+        sleep(1)
+        expect(all(:test, 'task-title').count).to be 1
+      end
+    end
+
+    describe 'キーワード検索の結果に対する操作' do
       let(:user) { create(:user) }
 
       describe 'ソート' do
@@ -354,45 +398,221 @@ RSpec.describe "Tasks" do
       end
 
       describe '絞り込み' do
-        it '検索結果をステータスで絞り込める' do
-          create(:task, title: '青りんご', state: 'done', user: user)
-          create(:task, title: '毒りんご', state: 'not_started', user: user)
-          create(:task, title: 'りんごの木', state: 'not_started', user: user)
-          create(:task, title: '私はりんごが好きです', state: 'in_progress', user: user)
-          create(:task, title: 'パイナップル', state: 'in_progress', user: user)
-          create(:task, title: 'ぶどう', state: 'in_progress', user: user)
-          login_as(user)
-          fill_in 'キーワード', with: 'りんご'
-          click_button '検索'
-          # TODO
-          sleep(1)
-          click_link '未着手のタスク'
-          # TODO
-          sleep(1)
-          wait_for_css_appear('.task-card') do
-            within(:test, 'task-list') do
-              task_titles = all(:test, 'task-title')
-              expect(task_titles.count).to be 2
-              task_titles.each do |el|
-                expect(el.text).to match(/毒りんご|りんごの木/)
+        describe '検索結果の絞り込み' do
+          it '検索結果をステータスで絞り込める' do
+            create(:task, title: '青りんご', state: 'done', user: user)
+            create(:task, title: '毒りんご', state: 'not_started', user: user)
+            create(:task, title: 'りんごの木', state: 'not_started', user: user)
+            create(:task, title: '私はりんごが好きです', state: 'in_progress', user: user)
+            create(:task, title: 'パイナップル', state: 'in_progress', user: user)
+            create(:task, title: 'ぶどう', state: 'in_progress', user: user)
+            login_as(user)
+            fill_in 'キーワード', with: 'りんご'
+            click_button '検索'
+            # TODO
+            sleep(1)
+            click_link '未着手のタスク'
+            # TODO
+            sleep(1)
+            wait_for_css_appear('.task-card') do
+              within(:test, 'task-list') do
+                task_titles = all(:test, 'task-title')
+                expect(task_titles.count).to be 2
+                task_titles.each do |el|
+                  expect(el.text).to match(/毒りんご|りんごの木/)
+                end
+              end
+            end
+          end
+
+          it '検索結果をタグで絞り込める' do
+            task1 = create(:task, title: '毒りんご', user: user)
+            task2 = create(:task, title: 'りんごの木', user: user)
+            create(:task, title: '私はりんごが好きです', user: user)
+            create(:task, title: '青りんご', user: user)
+            create(:task, title: 'パイナップル', user: user)
+            create(:task, title: 'ぶどう', user: user)
+            create(:tagging, tag: create(:tag, name: 'foo'), task: task1)
+            create(:tagging, tag: create(:tag, name: 'foo'), task: task2)
+  
+            login_as(user)
+            fill_in 'キーワード', with: 'りんご'
+            click_button '検索'
+            # TODO
+            sleep(1)
+            click_link 'foo'
+            # TODO
+            sleep(1)
+            wait_for_css_appear('.task-card') do
+              within(:test, 'task-list') do
+                task_titles = all(:test, 'task-title')
+                expect(task_titles.count).to be 2
+                task_titles.each do |el|
+                  expect(el.text).to match(/毒りんご|りんごの木/)
+                end
               end
             end
           end
         end
 
-        it '検索結果をステータスで絞り込み、それを締め切りに近い順に並び替えできる' do
-          task1 = create(:task, title: '青りんご', state: 'not_started', deadline: 2.days.from_now, user: user)
-          task2 = create(:task, title: '毒りんご', state: 'not_started', deadline: 1.day.from_now, user: user)
-          task3 = create(:task, title: 'りんごの木', state: 'not_started', deadline: 3.days.from_now, user: user)
-          create(:task, title: '私はりんごが好きです', state: 'in_progress', user: user)
-          create(:task, title: 'りんごちゃん', state: 'in_progress', user: user)
-          create(:task, title: 'ぶどう', state: 'done', user: user)
+        describe '検索結果を絞り込み、それをソートする' do
+          context 'キーワード検索の結果をステータスで絞り込んだ時' do
+            it '締め切りに近い順に並び替えできる' do
+              task1 = create(:task, title: '青りんご', state: 'not_started', deadline: 2.days.from_now, user: user)
+              task2 = create(:task, title: '毒りんご', state: 'not_started', deadline: 1.day.from_now, user: user)
+              task3 = create(:task, title: 'りんごの木', state: 'not_started', deadline: 3.days.from_now, user: user)
+              create(:task, title: '私はりんごが好きです', state: 'in_progress', user: user)
+              create(:task, title: 'りんごちゃん', state: 'in_progress', user: user)
+              create(:task, title: 'ぶどう', state: 'done', user: user)
+              login_as(user)
+              fill_in 'キーワード', with: 'りんご'
+              click_button '検索'
+              # TODO
+              sleep(1)
+              click_link '未着手のタスク'
+              # TODO
+              sleep(1)
+              click_link '締切が近い順'
+              # TODO
+              sleep(1)
+              wait_for_css_appear('.task-card') do
+                within(:test, 'task-list') do
+                  task_titles = all(:test, 'task-title')
+                  expect(task_titles.count).to be 3
+                  task_titles.each do |el|
+                    expect(el.text).to match(/青りんご|毒りんご|りんごの木/)
+                  end
+                  expect(task_titles[0].text).to eq task2.title
+                  expect(task_titles[1].text).to eq task1.title
+                  expect(task_titles[2].text).to eq task3.title
+                end
+              end
+            end
+    
+            it '重要度で並び替えできる' do
+              task1 = create(:task, title: '毒りんご', state: 'not_started', priority: 'low', user: user)
+              task2 = create(:task, title: 'りんごの木', state: 'not_started', priority: 'high', user: user)
+              task3 = create(:task, title: '私はりんごが好きです', state: 'not_started', priority: 'mid', user: user)
+              create(:task, title: '青りんご', state: 'done', priority: 'mid', user: user)
+              create(:task, title: 'パイナップル', state: 'in_progress', priority: 'low', user: user)
+              create(:task, title: 'ぶどう', state: 'in_progress', priority: 'low', user: user)
+    
+              login_as(user)
+              fill_in 'キーワード', with: 'りんご'
+              click_button '検索'
+              # TODO
+              sleep(1)
+              click_link '未着手のタスク'
+              # TODO
+              sleep(1)
+              click_link '重要度の高い順'
+              # TODO
+              sleep(1)
+              wait_for_css_appear('.task-card') do
+                within(:test, 'task-list') do
+                  task_titles = all(:test, 'task-title')
+                  expect(task_titles.count).to be 3
+                  task_titles.each do |el|
+                    expect(el.text).to match(/毒りんご|りんごの木|私はりんごが好きです/)
+                  end
+                  expect(task_titles[0].text).to eq task2.title
+                  expect(task_titles[1].text).to eq task3.title
+                  expect(task_titles[2].text).to eq task1.title
+                end
+              end
+            end
+          end
+
+          context 'キーワード検索の結果をタグで絞り込んだ時' do
+            it '締め切りに近い順に並び替えできる' do
+              task1 = create(:task, title: '毒りんご', deadline: 2.days.from_now, user: user)
+              task2 = create(:task, title: 'りんごの木', deadline: 1.day.from_now, user: user)
+              task3 = create(:task, title: '私はりんごが好きです', deadline: 3.days.from_now, user: user)
+              create(:task, title: '青りんご', user: user)
+              create(:task, title: 'パイナップル', user: user)
+              create(:task, title: 'ぶどう', user: user)
+              create(:tagging, tag: create(:tag, name: 'foo'), task: task1)
+              create(:tagging, tag: create(:tag, name: 'foo'), task: task2)
+              create(:tagging, tag: create(:tag, name: 'foo'), task: task3)
+    
+              login_as(user)
+              fill_in 'キーワード', with: 'りんご'
+              click_button '検索'
+              # TODO
+              sleep(1)
+              click_link 'foo'
+              # TODO
+              sleep(1)
+              click_link '締切が近い順'
+              #TODO
+              sleep(1)
+              wait_for_css_appear('.task-card') do
+                within(:test, 'task-list') do
+                  task_titles = all(:test, 'task-title')
+                  expect(task_titles.count).to be 3
+                  task_titles.each do |el|
+                    expect(el.text).to match(/毒りんご|りんごの木|私はりんごが好きです/)
+                  end
+                  expect(task_titles[0].text).to eq task2.title
+                  expect(task_titles[1].text).to eq task1.title
+                  expect(task_titles[2].text).to eq task3.title
+                end
+              end
+            end
+    
+            it '重要度で並び替えできる' do
+              task1 = create(:task, title: '毒りんご', priority: 'mid', user: user)
+              task2 = create(:task, title: 'りんごの木', priority: 'low', user: user)
+              task3 = create(:task, title: '私はりんごが好きです', priority: 'high', user: user)
+              create(:task, title: '青りんご', user: user)
+              create(:task, title: 'パイナップル', user: user)
+              create(:task, title: 'ぶどう', user: user)
+              create(:tagging, tag: create(:tag, name: 'foo'), task: task1)
+              create(:tagging, tag: create(:tag, name: 'foo'), task: task2)
+              create(:tagging, tag: create(:tag, name: 'foo'), task: task3)
+    
+              login_as(user)
+              fill_in 'キーワード', with: 'りんご'
+              click_button '検索'
+              # TODO
+              sleep(1)
+              click_link 'foo'
+              # TODO
+              sleep(1)
+              click_link '重要度の高い順'
+              #TODO
+              sleep(1)
+              wait_for_css_appear('.task-card') do
+                within(:test, 'task-list') do
+                  task_titles = all(:test, 'task-title')
+                  expect(task_titles.count).to be 3
+                  task_titles.each do |el|
+                    expect(el.text).to match(/毒りんご|りんごの木|私はりんごが好きです/)
+                  end
+                  expect(task_titles[0].text).to eq task3.title
+                  expect(task_titles[1].text).to eq task1.title
+                  expect(task_titles[2].text).to eq task2.title
+                end
+              end
+            end
+          end
+        end
+      end
+    end
+
+    describe 'ステータス検索の結果に対する操作' do
+      let(:user) { create(:user) }
+
+      describe 'ソート' do
+        it '検索結果を締め切りが近い順に並び替えできる' do
+          create(:task, title: '青りんご', state: 'done', deadline: 6.days.from_now, user: user)
+          create(:task, title: 'スイカ', state: 'not_started', deadline: 4.days.from_now, user: user)
+          create(:task, title: 'メロン', state: 'not_started', deadline: 1.day.from_now, user: user)
+          create(:task, title: 'みかん', state: 'in_progress', deadline: 5.days.from_now, user: user)
+          create(:task, title: 'パイナップル', state: 'in_progress', deadline: 2.days.from_now, user: user)
+          create(:task, title: 'ぶどう', state: 'in_progress', deadline: 3.days.from_now, user: user)
           login_as(user)
-          fill_in 'キーワード', with: 'りんご'
-          click_button '検索'
-          # TODO
-          sleep(1)
-          click_link '未着手のタスク'
+          click_link '着手しているタスク'
           # TODO
           sleep(1)
           click_link '締切が近い順'
@@ -403,29 +623,24 @@ RSpec.describe "Tasks" do
               task_titles = all(:test, 'task-title')
               expect(task_titles.count).to be 3
               task_titles.each do |el|
-                expect(el.text).to match(/青りんご|毒りんご|りんごの木/)
+                expect(el.text).to match(/パイナップル|ぶどう|みかん/)
               end
-              expect(task_titles[0].text).to eq task2.title
-              expect(task_titles[1].text).to eq task1.title
-              expect(task_titles[2].text).to eq task3.title
+              expect(task_titles[0].text).to eq 'パイナップル'
+              expect(task_titles[1].text).to eq 'ぶどう'
+              expect(task_titles[2].text).to eq 'みかん'
             end
           end
         end
 
-        it '検索結果をステータスで絞り込み、それを重要度で並び替えできる' do
-          task1 = create(:task, title: '毒りんご', state: 'not_started', priority: 'low', user: user)
-          task2 = create(:task, title: 'りんごの木', state: 'not_started', priority: 'high', user: user)
-          task3 = create(:task, title: '私はりんごが好きです', state: 'not_started', priority: 'mid', user: user)
-          create(:task, title: '青りんご', state: 'done', priority: 'mid', user: user)
-          create(:task, title: 'パイナップル', state: 'in_progress', priority: 'low', user: user)
+        it '検索結果を重要度で並び替えできる' do
+          create(:task, title: '青りんご', state: 'done', priority: 'low', user: user)
+          create(:task, title: 'スイカ', state: 'not_started', priority: 'low', user: user)
+          create(:task, title: 'メロン', state: 'not_started', priority: 'low', user: user)
+          create(:task, title: 'みかん', state: 'in_progress', priority: 'mid', user: user)
+          create(:task, title: 'パイナップル', state: 'in_progress', priority: 'high', user: user)
           create(:task, title: 'ぶどう', state: 'in_progress', priority: 'low', user: user)
-
           login_as(user)
-          fill_in 'キーワード', with: 'りんご'
-          click_button '検索'
-          # TODO
-          sleep(1)
-          click_link '未着手のタスク'
+          click_link '着手しているタスク'
           # TODO
           sleep(1)
           click_link '重要度の高い順'
@@ -436,7 +651,66 @@ RSpec.describe "Tasks" do
               task_titles = all(:test, 'task-title')
               expect(task_titles.count).to be 3
               task_titles.each do |el|
-                expect(el.text).to match(/毒りんご|りんごの木|私はりんごが好きです/)
+                expect(el.text).to match(/パイナップル|ぶどう|みかん/)
+              end
+              expect(task_titles[0].text).to eq 'パイナップル'
+              expect(task_titles[1].text).to eq 'みかん'
+              expect(task_titles[2].text).to eq 'ぶどう'
+            end
+          end
+        end
+      end
+
+      describe '絞り込み' do
+        it '検索結果をタグで絞り込める' do
+          task1 = create(:task, state: 'in_progress', user: user)
+          task2 = create(:task, state: 'in_progress', user: user)
+          create(:task, state: 'in_progress', user: user)
+          create(:task, state: 'done', user: user)
+          create(:tagging, tag: create(:tag, name: 'foo'), task: task1)
+          create(:tagging, tag: create(:tag, name: 'foo'), task: task2)
+          login_as(user)
+          click_link '着手しているタスク'
+          # TODO
+          sleep(1)
+          click_link 'foo'
+          # TODO
+          sleep(1)
+          wait_for_css_appear('.task-card') do
+            within(:test, 'task-list') do
+              task_titles = all(:test, 'task-title')
+              expect(task_titles.count).to be 2
+            end
+          end
+        end
+      end
+    end
+
+    describe 'タグ検索の結果に対する操作' do
+      let(:user) { create(:user) }
+
+      describe 'ソート' do
+        it '検索結果を締め切りが近い順に並び替えできる' do
+          task1 = create(:task, title: 'りんご', deadline: 3.days.from_now, user: user)
+          task2 = create(:task, title: 'バナナ', deadline: 1.day.from_now, user: user)
+          task3 = create(:task, title: 'みかん', deadline: 2.days.from_now, user: user)
+          create(:task, user: user)
+          create(:tagging, tag: create(:tag, name: 'foo'), task: task1)
+          create(:tagging, tag: create(:tag, name: 'foo'), task: task2)
+          create(:tagging, tag: create(:tag, name: 'foo'), task: task3)
+          login_as(user)
+          click_link 'foo'
+          # TODO
+          sleep(1)
+          click_link '締切が近い順'
+          # TODO
+          sleep(1)
+          wait_for_css_appear('.task-card') do
+            within(:test, 'task-list') do
+              task_titles = all(:test, 'task-title')
+              expect(task_titles.count).to be 3
+              task_titles.each do |el|
+                expect(el.text).to match(/りんご|バナナ|みかん/)
               end
               expect(task_titles[0].text).to eq task2.title
               expect(task_titles[1].text).to eq task3.title
@@ -444,64 +718,90 @@ RSpec.describe "Tasks" do
             end
           end
         end
-      end
-    end
 
-    describe 'ステータス検索の結果をソートできる' do
-      let(:user) { create(:user) }
-
-      it '検索結果を締め切りが近い順に並び替えできる' do
-        create(:task, title: '青りんご', state: 'done', deadline: 6.days.from_now, user: user)
-        create(:task, title: 'スイカ', state: 'not_started', deadline: 4.days.from_now, user: user)
-        create(:task, title: 'メロン', state: 'not_started', deadline: 1.day.from_now, user: user)
-        create(:task, title: 'みかん', state: 'in_progress', deadline: 5.days.from_now, user: user)
-        create(:task, title: 'パイナップル', state: 'in_progress', deadline: 2.days.from_now, user: user)
-        create(:task, title: 'ぶどう', state: 'in_progress', deadline: 3.days.from_now, user: user)
-        login_as(user)
-        click_link '着手しているタスク'
-        # TODO
-        sleep(1)
-        click_link '締切が近い順'
-        # TODO
-        sleep(1)
-        wait_for_css_appear('.task-card') do
-          within(:test, 'task-list') do
-            task_titles = all(:test, 'task-title')
-            expect(task_titles.count).to be 3
-            task_titles.each do |el|
-              expect(el.text).to match(/パイナップル|ぶどう|みかん/)
+        it '検索結果を優先度が高い順に並び替えできる' do
+          task1 = create(:task, title: 'りんご', priority: 'mid', user: user)
+          task2 = create(:task, title: 'バナナ', priority: 'low', user: user)
+          task3 = create(:task, title: 'みかん', priority: 'high', user: user)
+          create(:task, priority: 'low', user: user)
+          create(:tagging, tag: create(:tag, name: 'foo'), task: task1)
+          create(:tagging, tag: create(:tag, name: 'foo'), task: task2)
+          create(:tagging, tag: create(:tag, name: 'foo'), task: task3)
+          login_as(user)
+          click_link 'foo'
+          # TODO
+          sleep(1)
+          click_link '重要度の高い順'
+          # TODO
+          sleep(1)
+          wait_for_css_appear('.task-card') do
+            within(:test, 'task-list') do
+              task_titles = all(:test, 'task-title')
+              expect(task_titles.count).to be 3
+              task_titles.each do |el|
+                expect(el.text).to match(/りんご|バナナ|みかん/)
+              end
+              expect(task_titles[0].text).to eq task3.title
+              expect(task_titles[1].text).to eq task1.title
+              expect(task_titles[2].text).to eq task2.title
             end
-            expect(task_titles[0].text).to eq 'パイナップル'
-            expect(task_titles[1].text).to eq 'ぶどう'
-            expect(task_titles[2].text).to eq 'みかん'
+          end
+        end
+
+        it '検索結果を優先度が低い順に並び替えできる' do
+          task1 = create(:task, title: 'りんご', priority: 'mid', user: user)
+          task2 = create(:task, title: 'バナナ', priority: 'low', user: user)
+          task3 = create(:task, title: 'みかん', priority: 'high', user: user)
+          create(:task, priority: 'low', user: user)
+          create(:tagging, tag: create(:tag, name: 'foo'), task: task1)
+          create(:tagging, tag: create(:tag, name: 'foo'), task: task2)
+          create(:tagging, tag: create(:tag, name: 'foo'), task: task3)
+          login_as(user)
+          click_link 'foo'
+          # TODO
+          sleep(1)
+          click_link '重要度の低い順'
+          # TODO
+          sleep(1)
+          wait_for_css_appear('.task-card') do
+            within(:test, 'task-list') do
+              task_titles = all(:test, 'task-title')
+              expect(task_titles.count).to be 3
+              task_titles.each do |el|
+                expect(el.text).to match(/りんご|バナナ|みかん/)
+              end
+              expect(task_titles[0].text).to eq task2.title
+              expect(task_titles[1].text).to eq task1.title
+              expect(task_titles[2].text).to eq task3.title
+            end
           end
         end
       end
 
-      it '検索結果を重要度で並び替えできる' do
-        create(:task, title: '青りんご', state: 'done', priority: 'low', user: user)
-        create(:task, title: 'スイカ', state: 'not_started', priority: 'low', user: user)
-        create(:task, title: 'メロン', state: 'not_started', priority: 'low', user: user)
-        create(:task, title: 'みかん', state: 'in_progress', priority: 'mid', user: user)
-        create(:task, title: 'パイナップル', state: 'in_progress', priority: 'high', user: user)
-        create(:task, title: 'ぶどう', state: 'in_progress', priority: 'low', user: user)
-        login_as(user)
-        click_link '着手しているタスク'
-        # TODO
-        sleep(1)
-        click_link '重要度の高い順'
-        # TODO
-        sleep(1)
-        wait_for_css_appear('.task-card') do
-          within(:test, 'task-list') do
-            task_titles = all(:test, 'task-title')
-            expect(task_titles.count).to be 3
-            task_titles.each do |el|
-              expect(el.text).to match(/パイナップル|ぶどう|みかん/)
+      describe '絞り込み' do
+        it '検索結果をステータスで絞り込める' do
+          task1 = create(:task, title: 'りんご', state: 'done', user: user)
+          task2 = create(:task, title: 'バナナ',state: 'in_progress', user: user)
+          task3 = create(:task, title: 'みかん', state: 'not_started', user: user)
+          create(:task, state: 'done', user: user)
+          create(:tagging, tag: create(:tag, name: 'foo'), task: task1)
+          create(:tagging, tag: create(:tag, name: 'foo'), task: task2)
+          create(:tagging, tag: create(:tag, name: 'foo'), task: task3)
+          login_as(user)
+          click_link 'foo'
+          # TODO
+          sleep(1)
+          click_link '完了したタスク'
+          # TODO
+          sleep(1)
+          wait_for_css_appear('.task-card') do
+            within(:test, 'task-list') do
+              task_titles = all(:test, 'task-title')
+              expect(task_titles.count).to be 1
+              task_titles.each do |el|
+                expect(el.text).to match(/りんご/)
+              end
             end
-            expect(task_titles[0].text).to eq 'パイナップル'
-            expect(task_titles[1].text).to eq 'みかん'
-            expect(task_titles[2].text).to eq 'ぶどう'
           end
         end
       end

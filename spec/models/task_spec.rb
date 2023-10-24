@@ -79,4 +79,34 @@ RSpec.describe Task do
       end
     end
   end
+
+  describe '#save_tag' do
+    context 'タスクにタグが付いていない時' do
+      it 'タスクにタグを登録できる' do
+        task = create(:task)
+        expect(task.tags.count).to be 0
+        tag_list = Tag.build_tag_list('foo,bar,baz')
+        task.save_tag(tag_list)
+        expect(task.tags.count).to be 3
+      end
+    end
+
+    context 'タスクにタグが付いる時' do
+      it 'タグを追加できる' do
+        task = create(:task, :with_tags)
+        expect(task.tags.count).to be 3
+        tag_list = Tag.build_tag_list('tag-0, tag-1, tag-2, foo')
+        task.save_tag(tag_list)
+        expect(task.tags.count).to be 4
+      end
+
+      it 'タグを減らすことができる' do
+        task = create(:task, :with_tags)
+        expect(task.tags.count).to be 3
+        tag_list = Tag.build_tag_list('tag-0, tag-1')
+        task.save_tag(tag_list)
+        expect(task.tags.count).to be 2
+      end
+    end
+  end
 end

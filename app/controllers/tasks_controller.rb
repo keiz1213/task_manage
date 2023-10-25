@@ -54,7 +54,7 @@ class TasksController < ApplicationController
 
   def set_task
     @task = current_user&.tasks&.find_by(id: params[:id])
-    redirect_to tasks_path, status: :see_other if @task.nil?
+    routing_error if @task.nil?
   end
 
   def task_params

@@ -15,7 +15,7 @@ class Task < ApplicationRecord
   scope :deadline, -> { order(deadline: :asc) }
   scope :high_priority_first, -> { order(priority: :desc) }
   scope :low_priority_first, -> { order(priority: :asc) }
-  scope :tag, ->(tag_name) { joins(:tags).where(name: tag_name) }
+  scope :tag, ->(tag_name) { joins(:tags).where(tags: { name: tag_name }) }
   scope :matches, ->(keyword) {
                     where("title LIKE ?", "%#{sanitize_sql_like(keyword)}%").or(where("description LIKE ?", "%#{sanitize_sql_like(keyword)}%"))
                   }

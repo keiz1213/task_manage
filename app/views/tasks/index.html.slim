@@ -1,4 +1,4 @@
-.
+= turbo_frame_tag 'task-list'
   .mx-auto
     .d-flex.justify-content-between
       = link_to '新規タスク', new_task_path, class: 'btn btn-primary'
@@ -10,5 +10,5 @@
   .row.row-cols-3 data-test="task-list"
     - @tasks.each do |task|
       .col = render partial: 'task', locals: { task: task }
-.d-flex.justify-content-end.mx-4
-  = paginate @tasks
+  .d-flex.justify-content-end.mx-4
+    = paginate @tasks

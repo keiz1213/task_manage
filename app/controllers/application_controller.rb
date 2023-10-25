@@ -35,7 +35,7 @@ class ApplicationController < ActionController::Base
     if request.format.to_sym == :json
       render json: { error: '404 error' }, status: 404
     else
-      render 'errors/error_404', status: 404
+      render 'errors/error_404', layout: 'errors', status: 404
     end
   end
 
@@ -45,7 +45,7 @@ class ApplicationController < ActionController::Base
     if request.format.to_sym == :json
       render json: { error: '500 error' }, status: 500
     else
-      render 'errors/error_500', status: 500
+      render 'errors/error_500', layout: 'errors', status: 500
     end
   end
 end

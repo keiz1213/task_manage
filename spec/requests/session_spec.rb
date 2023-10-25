@@ -14,7 +14,7 @@ RSpec.describe 'Sessions' do
         expect(response).to redirect_to login_path
         expect(flash[:danger]).to eq 'ログインしてください'
       end
-  
+
       it 'タスク詳細にアクセスするとログインページにリダイレクトされる' do
         get task_path user_task
 

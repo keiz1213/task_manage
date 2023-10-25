@@ -1,6 +1,6 @@
 class ApplicationController < ActionController::Base
-  rescue_from Exception, with: :_render_500
-  rescue_from ActiveRecord::RecordNotFound, ActionController::RoutingError, with: :_render_404
+  rescue_from Exception, with: :render500
+  rescue_from ActiveRecord::RecordNotFound, ActionController::RoutingError, with: :render404
 
   include SessionsHelper
 
@@ -29,23 +29,23 @@ class ApplicationController < ActionController::Base
     params[:search].present? ? params.require(:search).permit(:keyword, :sort_by, :state, :tag_name) : {}
   end
 
-  def _render_404(e = nil)
-    logger.info "Rendering 404 with exception: #{e.message}" if e
+  def render404(error = nil)
+    logger.info "Rendering 404 with exception: #{error.message}" if error
 
     if request.format.to_sym == :json
-      render json: { error: '404 error' }, status: 404
+      render json: { error: '404 error' }, status: :not_found
     else
-      render 'errors/error_404', layout: 'errors', status: 404
+      render 'errors/error_404', layout: 'errors', status: :not_found
     end
   end
 
-  def _render_500(e = nil)
-    logger.error "Rendering 500 with exception: #{e.message}" if e
+  def render500(error = nil)
+    logger.error "Rendering 500 with exception: #{error.message}" if error
 
     if request.format.to_sym == :json
-      render json: { error: '500 error' }, status: 500
+      render json: { error: '500 error' }, status: :internal_server_error
     else
-      render 'errors/error_500', layout: 'errors', status: 500
+      render 'errors/error_500', layout: 'errors', status: :internal_server_error
     end
   end
 end

@@ -6,7 +6,7 @@
   .card-body
     = render partial: 'tasks/state', locals: { task: task }
     - task.tags.each do |tag|
-      span.badge.me-1.mb-1.text-bg-secondary.fs-6 = tag.name
+      span.badge.me-1.mb-2.text-bg-secondary.fs-6 = tag.name
     .d-flex.justify-content-between
       = "締め切り: " + l(task.deadline, format: :long)
       .

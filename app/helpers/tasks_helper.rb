@@ -3,11 +3,11 @@ module TasksHelper
     classes = %w[badge rounded-pill my-auto py-2]
     case task.priority
     when 'low'
-      classes << 'text-bg-primary'
+      classes << 'bg-primary-subtle text-primary-emphasis'
     when 'mid'
-      classes << 'text-bg-warning'
+      classes << 'bg-warning-subtle text-warning-emphasis'
     when 'high'
-      classes << 'text-bg-danger'
+      classes << 'bg-danger-subtle text-danger-emphasis'
     end
     tag.span(class: classes) { "重要度: #{t("activerecord.attributes.task.priorities.#{task.priority}")}" }
   end

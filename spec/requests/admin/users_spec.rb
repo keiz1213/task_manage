@@ -1,31 +1,53 @@
 require 'rails_helper'
 
 RSpec.describe "Admin::Users" do
-  describe "GET /new" do
-    it "returns http success" do
-      get "/admin/users/new"
-      expect(response).to have_http_status(:success)
-    end
+  let(:admin_user) { create(:user) }
+  let(:non_admin_user) { create(:user, admin: false) }
+
+  it 'adminユーザーはユーザー管理ページにアクセスできる' do
+    login_as(admin_user)
+    get admin_users_path
+
+    expect(response).to have_http_status(:ok)
   end
 
-  describe "GET /edit" do
-    it "returns http success" do
-      get "/admin/users/edit"
-      expect(response).to have_http_status(:success)
-    end
+  it 'adminユーザー以外はユーザー管理ページにアクセスしようとすると404が返る' do
+    login_as(non_admin_user)
+    get admin_users_path
+
+    expect(response).to have_http_status(:not_found)
+    expect(response.body).to include 'お探しのページは見つかりませんでした'
   end
 
-  describe "GET /show" do
-    it "returns http success" do
-      get "/admin/users/show"
-      expect(response).to have_http_status(:success)
-    end
+  it 'adminユーザー以外はユーザー詳細ページにアクセスしようとすると404が返る' do
+    login_as(non_admin_user)
+    get admin_user_path admin_user
+
+    expect(response).to have_http_status(:not_found)
+    expect(response.body).to include 'お探しのページは見つかりませんでした'
   end
 
-  describe "GET /index" do
-    it "returns http success" do
-      get "/admin/users/index"
-      expect(response).to have_http_status(:success)
-    end
+  it 'adminユーザー以外はユーザーを作成しようとすると404が返る' do
+    login_as(non_admin_user)
+    post admin_users_path
+
+    expect(response).to have_http_status(:not_found)
+    expect(response.body).to include 'お探しのページは見つかりませんでした'
+  end
+
+  it 'adminユーザー以外はユーザーを更新しようとすると404が返る' do
+    login_as(non_admin_user)
+    put admin_user_path admin_user
+
+    expect(response).to have_http_status(:not_found)
+    expect(response.body).to include 'お探しのページは見つかりませんでした'
+  end
+
+  it 'adminユーザー以外はユーザーを削除しようとすると404が返る' do
+    login_as(non_admin_user)
+    delete admin_user_path admin_user
+
+    expect(response).to have_http_status(:not_found)
+    expect(response.body).to include 'お探しのページは見つかりませんでした'
   end
 end

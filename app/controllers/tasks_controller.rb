@@ -39,8 +39,7 @@ class TasksController < ApplicationController
 
   def destroy
     @task.destroy
-    flash[:success] = "タスク: #{@task.title}を削除しました"
-    redirect_to tasks_url
+    flash.now[:success] = "タスク: #{@task.title}を削除しました"
   end
 
   def update_state

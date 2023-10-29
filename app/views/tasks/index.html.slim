@@ -25,6 +25,7 @@
         .col-1.pb-2.text-center
           span.bi-exclamation-circle.text-black-50
             span.text-black-50.ms-1 重要度
+      div id="task-list"
       - @tasks.each do |task|
         = render partial: 'task', locals: { task: task }
   .d-flex.justify-content-end.my-4

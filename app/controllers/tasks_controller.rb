@@ -1,11 +1,8 @@
 class TasksController < ApplicationController
-  before_action :set_task, only: %i[show edit update destroy update_state]
+  before_action :set_task, only: %i[edit update destroy update_state]
 
   def index
     @tasks = @search_form.search(current_user).page(params[:page])
-  end
-
-  def show
   end
 
   def new
@@ -21,8 +18,7 @@ class TasksController < ApplicationController
     tag_list = Tag.build_tag_list(params[:task][:tag_name])
     if @task.save
       @task.save_tag(tag_list)
-      flash[:success] = "タスク: #{@task.title}を作成しました"
-      redirect_to tasks_path
+      flash.now[:success] = "タスク: #{@task.title}を作成しました"
     else
       render :new, status: :unprocessable_entity
     end
@@ -32,8 +28,7 @@ class TasksController < ApplicationController
     tag_list = Tag.build_tag_list(params[:task][:tag_name])
     if @task.update(task_params)
       @task.save_tag(tag_list)
-      flash[:success] = "タスク: #{@task.title}を更新しました"
-      redirect_to tasks_path
+      flash.now[:success] = "タスク: #{@task.title}を更新しました"
     else
       render :edit, status: :unprocessable_entity
     end
@@ -41,13 +36,12 @@ class TasksController < ApplicationController
 
   def destroy
     @task.destroy
-    flash[:success] = "タスク: #{@task.title}を削除しました"
-    redirect_to tasks_url
+    flash.now[:success] = "タスク: #{@task.title}を削除しました"
   end
 
   def update_state
     @task.update_state
-    render turbo_stream: turbo_stream.replace(@task, partial: 'state', locals: { task: @task })
+    render turbo_stream: turbo_stream.replace("task-state-#{@task.id}", partial: 'state', locals: { task: @task })
   end
 
   private

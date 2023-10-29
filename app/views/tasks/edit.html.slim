@@ -1,6 +1,2 @@
-h1 tasks#edit!
-
-.nav
-  = link_to '一覧', tasks_path, class: 'nav-link'
-
-= render partial: 'form', locals: { task: @task }
+= render 'modal', title: '編集'
+  = render 'form', task: @task

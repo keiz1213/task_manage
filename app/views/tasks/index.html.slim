@@ -1,13 +1,27 @@
 .mx-auto
   .d-flex.justify-content-between
-    = link_to '新規タスク', new_task_path, class: 'btn btn-primary'
+    = link_to '新規タスク', new_task_path, class: 'btn btn-primary', data: { turbo_frame: 'modal' }
     .nav
       li.navitem = link_to '重要度の高い順', tasks_path(search: { keyword: @search_form.keyword, sort_by: 'high', state: @search_form.state, tag_name: @search_form.tag_name }), method: 'get', class: 'nav-link'
       li.navitem = link_to '重要度の低い順', tasks_path(search: { keyword: @search_form.keyword, sort_by: 'low', state: @search_form.state, tag_name: @search_form.tag_name }), method: 'get', class: 'nav-link'
       li.navitem = link_to '締切が近い順', tasks_path(search: { keyword: @search_form.keyword, sort_by: 'deadline', state: @search_form.state, tag_name: @search_form.tag_name }), method: 'get', class: 'nav-link'
       li.navitem = link_to 'リセット', tasks_path, method: 'get', class: 'nav-link'
-.row.row-cols-3 data-test="task-list"
-  - @tasks.each do |task|
-    .col = render partial: 'task', locals: { task: task }
-.d-flex.justify-content-end.mx-4
-  = paginate @tasks
+  .card.shadow.mt-3
+    .card-header.text-black-50 タスク一覧
+    .card-body.mx-3
+      .row
+        .col-3.pb-2.text-center
+          span.bi-pencil.text-black-50
+        .col-1.pb-2.text-center
+          span.bi-check2-circle.text-black-50
+        .col-4.pb-2.text-center
+          span.bi-tag.text-black-50
+        .col-2.pb-2.text-center
+          span.bi-hourglass-split.text-black-50
+        .col-1.pb-2.text-center
+          span.bi-exclamation-circle.text-black-50
+      div id="task-list"
+      - @tasks.each do |task|
+        = render partial: 'task', locals: { task: task }
+  .d-flex.justify-content-end.my-4
+    = paginate @tasks

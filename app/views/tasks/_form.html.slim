@@ -1,35 +1,36 @@
-- if task.errors.present?
-  ul#error_explanation
-    - task.errors.full_messages.each do |message|
-      li = message
+= turbo_frame_tag task
+  - if task.errors.present?
+    ul#error_explanation
+      - task.errors.full_messages.each do |message|
+        li = message
 
-= form_with model: task do |f|
-  .form-group.mb-3
-    = f.label :title
-    = f.text_field :title, class: 'form-control'
-  .form-group.mb-3
-    = f.label :description
-    = f.text_area :description, rows: 5, class: 'form-control'
-  .form-group.mb-3
-    = f.label :priority
-    <br>
-    .form-check.form-check-inline
-      = f.label :priority, t("activerecord.attributes.task.priorities.low"), class: 'form-check-label', for: 'task_priority_low'
-      = f.radio_button :priority, 'low', checked: true, class: 'form-check-input', id: 'task_priority_low'
-    .form-check.form-check-inline
-      = f.label :priority, t("activerecord.attributes.task.priorities.mid"), class: 'form-check-label', for: 'task_priority_mid'
-      = f.radio_button :priority, 'mid', class: 'form-check-input', id: 'task_priority_mid'
-    .form-check.form-check-inline
-      = f.label :priority, t("activerecord.attributes.task.priorities.high"), class: 'form-check-label', for: 'task_priority_high'
-      = f.radio_button :priority, 'high', class: 'form-check-input', id: 'task_priority_high'
-  .form-group.mb-3
-    = f.label :deadline, class: 'control-label'
-    <br>
-    = f.datetime_local_field :deadline, class: 'form-control', id: 'task_deadline', step: 'any'
-  .form-group.mb-3
-    = f.label :tag_name, class: 'control-label'
-    label.form-text.mx-3
-      | ※ タグをカンマ(,)区切りで複数登録できます
-    = f.text_field :tag_name, value: @jointed_tag_names, class: 'form-control'
-  = f.hidden_field :state, value: 'not_started'
-  = f.submit nil, class: 'btn btn-primary'
+  = form_with model: task, data: { action: 'turbo:submit-end->modal#close' } do |f|
+    .form-group.mb-3
+      = f.label :title
+      = f.text_field :title, class: 'form-control'
+    .form-group.mb-3
+      = f.label :description
+      = f.text_area :description, rows: 5, class: 'form-control'
+    .form-group.mb-3
+      = f.label :priority
+      <br>
+      .form-check.form-check-inline
+        = f.label :priority, t("activerecord.attributes.task.priorities.low"), class: 'form-check-label', for: 'task_priority_low'
+        = f.radio_button :priority, 'low', checked: true, class: 'form-check-input', id: 'task_priority_low'
+      .form-check.form-check-inline
+        = f.label :priority, t("activerecord.attributes.task.priorities.mid"), class: 'form-check-label', for: 'task_priority_mid'
+        = f.radio_button :priority, 'mid', class: 'form-check-input', id: 'task_priority_mid'
+      .form-check.form-check-inline
+        = f.label :priority, t("activerecord.attributes.task.priorities.high"), class: 'form-check-label', for: 'task_priority_high'
+        = f.radio_button :priority, 'high', class: 'form-check-input', id: 'task_priority_high'
+    .form-group.mb-3
+      = f.label :deadline, class: 'control-label'
+      <br>
+      = f.datetime_local_field :deadline, class: 'form-control', id: 'task_deadline', step: 'any'
+    .form-group.mb-3
+      = f.label :tag_name, class: 'control-label'
+      label.form-text.mx-3
+        | ※ タグをカンマ(,)区切りで複数登録できます
+      = f.text_field :tag_name, value: @jointed_tag_names, class: 'form-control'
+    = f.hidden_field :state, value: 'not_started'
+    = f.submit nil, class: 'btn btn-primary'

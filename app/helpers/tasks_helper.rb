@@ -13,7 +13,7 @@ module TasksHelper
   end
 
   def submit_state(form, task)
-    classes = %w[btn]
+    classes = %w[btn w-100 p-2]
     case task.state
     when 'not_started'
       classes << 'btn-outline-secondary'

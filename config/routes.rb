@@ -3,7 +3,7 @@ Rails.application.routes.draw do
   namespace :admin do
     resources :users
   end
-  resources :tasks do
+  resources :tasks, except: :show do
     member do
       patch :update_state
     end

@@ -1,14 +1,21 @@
-.card.my-3.mx-auto.task-card
-  .card-header
-    .d-flex.justify-content-between
-      h5.card-title.my-auto = link_to task.title, task, data: { test: 'task-title' }, class: "text-decoration-none"
-      = priority_badge(task)
-  .card-body
-    = render partial: 'tasks/state', locals: { task: task }
-    - task.tags.each do |tag|
-      span.badge.me-1.mb-2.text-bg-secondary.fs-6 = tag.name
-    .d-flex.justify-content-between
-      = "締め切り: " + l(task.deadline, format: :long)
-      .
-        = link_to '編集', edit_task_path(task), class: 'mx-1 text-decoration-none'
-        = link_to '削除', task, data: { turbo_method: :delete, turbo_confirm: '本当に削除しますか？' }, class: 'mx-1 text-decoration-none'
+= turbo_frame_tag task
+    .row.py.border-top.accordion id="accordion-#{task.id}"
+      .col-3.my-auto
+        button.btn.btn-link type="button" data-test="task-title" data-bs-toggle="collapse" data-bs-target="#detail-#{task.id}" = task.title
+      .col-1.my-auto.text-center
+        = render partial: 'tasks/state', locals: { task: task }
+      .col-4.my-auto.pt-2
+        - task.tags.each do |tag|
+          span.badge.me-1.mb-2.text-bg-secondary.fs-6 = tag.name
+      .col-2.my-auto.text-center.text-black-50
+        = l(task.deadline, format: :long)
+      .col-1.my-auto.text-center
+        = priority_badge(task)
+      .col-1.my-auto.px-1
+        .d-flex.justify-content-end
+          = link_to '編集', edit_task_path(task), class: 'mx-1 text-decoration-none', data: { turbo_frame: 'modal' }
+          = link_to '削除', task, data: { turbo_method: :delete, turbo_confirm: '本当に削除しますか？' }, class: 'mx-1 text-decoration-none'
+      .collapse id="detail-#{task.id}" data-bs-parent="#accordion-#{task.id}"
+        p.text-black-50 = '説明 : ' + task.description
+        p.text-black-50 = '作成日 : ' + l(task.created_at, format: :long)
+        p.text-black-50 = '更新日 : ' + l(task.updated_at, format: :long)

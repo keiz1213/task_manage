@@ -18,7 +18,7 @@ RSpec.describe "Tasks" do
         expect(page).to have_content('test-task')
         expect(page).to have_content('重要度: 中')
         expect(page.find(:test, 'update-state').value).to eq '未着手'
-        expect(page).to have_content('締め切り: 2100/01/02 03:04')
+        expect(page).to have_content('2100/01/02 03:04')
         expect(page).to have_content('foo')
         expect(page).to have_content('bar')
       }.to change(Task, :count).by(1)
@@ -32,13 +32,11 @@ RSpec.describe "Tasks" do
       yesterday_task = user_tasks.second
       day_before_yesterday_task = user_tasks.last
 
-      within(:test, 'task-list') do
-        task_titles = all(:test, 'task-title')
-        expect(task_titles.count).to be 3
-        expect(task_titles[0].text).to eq today_task.title
-        expect(task_titles[1].text).to eq yesterday_task.title
-        expect(task_titles[2].text).to eq day_before_yesterday_task.title
-      end
+      task_titles = all(:test, 'task-title')
+      expect(task_titles.count).to be 3
+      expect(task_titles[0].text).to eq today_task.title
+      expect(task_titles[1].text).to eq yesterday_task.title
+      expect(task_titles[2].text).to eq day_before_yesterday_task.title
     end
 
     it 'タスクの詳細' do
@@ -46,7 +44,7 @@ RSpec.describe "Tasks" do
       task = create(:task, user: user)
       login_as(user)
 
-      click_link task.title
+      click_button task.title
       expect(page).to have_content(task.title)
       expect(page).to have_content(task.description)
       expect(page).to have_content(I18n.t("activerecord.attributes.task.priorities.#{task.priority}"))
@@ -60,7 +58,7 @@ RSpec.describe "Tasks" do
       login_as(user)
 
       expect {
-        click_link task.title
+        click_button task.title
         click_link '編集'
         fill_in 'タイトル', with: 'test'
         choose '高'
@@ -72,7 +70,7 @@ RSpec.describe "Tasks" do
         expect(page).to have_content('test')
         expect(page).to have_content('重要度: 高')
         expect(page.find(:test, 'update-state').value).to eq '未着手'
-        expect(page).to have_content('締め切り: 2200/01/02 03:04')
+        expect(page).to have_content('2200/01/02 03:04')
         expect(page).to have_content('hoge')
         expect(page).to have_content('piyo')
       }.not_to change(Task, :count)
@@ -82,7 +80,7 @@ RSpec.describe "Tasks" do
       user = create(:user, :with_tagged_tasks)
       login_as(user)
       task_title = user.tasks[0].title
-      click_link task_title
+      click_button task_title
 
       expect {
         accept_confirm do
@@ -98,7 +96,7 @@ RSpec.describe "Tasks" do
       task_tag_names = task.tags.map(&:name)
       tag_count = task_tag_names.size
       login_as(user)
-      click_link task.title
+      click_button task.title
 
       expect {
         accept_confirm do
@@ -123,17 +121,12 @@ RSpec.describe "Tasks" do
       click_link '締切が近い順'
       # TODO
       sleep(1)
-      # 定義: spec/support/system_helpers
-      # 参考: https://qiita.com/johnslith/items/09bb0e5257e06a4bd948
-      wait_for_css_appear('.task-card') do
-        within(:test, 'task-list') do
-          task_titles = all(:test, 'task-title')
-          expect(task_titles.count).to be 3
-          expect(task_titles[0].text).to eq due_tomorrow_task.title
-          expect(task_titles[1].text).to eq due_day_after_tomorrow_task.title
-          expect(task_titles[2].text).to eq due_two_days_after_tomorrow_task.title
-        end
-      end
+      task_titles = all(:test, 'task-title')
+
+      expect(task_titles.count).to be 3
+      expect(task_titles[0].text).to eq due_tomorrow_task.title
+      expect(task_titles[1].text).to eq due_day_after_tomorrow_task.title
+      expect(task_titles[2].text).to eq due_two_days_after_tomorrow_task.title
     end
 
     it '重要度の高い順に並び替えできる' do
@@ -146,15 +139,12 @@ RSpec.describe "Tasks" do
       click_link '重要度の高い順'
       # TODO
       sleep(1)
-      wait_for_css_appear('.task-card') do
-        within(:test, 'task-list') do
-          task_titles = all(:test, 'task-title')
-          expect(task_titles.count).to be 3
-          expect(task_titles[0].text).to eq high_priority_task.title
-          expect(task_titles[1].text).to eq mid_priority_task.title
-          expect(task_titles[2].text).to eq low_priority_task.title
-        end
-      end
+      task_titles = all(:test, 'task-title')
+
+      expect(task_titles.count).to be 3
+      expect(task_titles[0].text).to eq high_priority_task.title
+      expect(task_titles[1].text).to eq mid_priority_task.title
+      expect(task_titles[2].text).to eq low_priority_task.title
     end
 
     it '重要度の低い順に並び替えできる' do
@@ -167,15 +157,12 @@ RSpec.describe "Tasks" do
       click_link '重要度の低い順'
       # TODO
       sleep(1)
-      wait_for_css_appear('.task-card') do
-        within(:test, 'task-list') do
-          task_titles = all(:test, 'task-title')
-          expect(task_titles.count).to be 3
-          expect(task_titles[0].text).to eq low_priority_task.title
-          expect(task_titles[1].text).to eq mid_priority_task.title
-          expect(task_titles[2].text).to eq high_priority_task.title
-        end
-      end
+
+      task_titles = all(:test, 'task-title')
+      expect(task_titles.count).to be 3
+      expect(task_titles[0].text).to eq low_priority_task.title
+      expect(task_titles[1].text).to eq mid_priority_task.title
+      expect(task_titles[2].text).to eq high_priority_task.title
     end
   end
 
@@ -185,18 +172,15 @@ RSpec.describe "Tasks" do
         user = create(:user, :with_tasks_separate_title)
         login_as(user)
 
-        fill_in 'キーワード', with: 'りんご'
+        fill_in 'キーワード検索', with: 'りんご'
         click_button '検索'
         # TODO
         sleep(1)
-        wait_for_css_appear('.task-card') do
-          within(:test, 'task-list') do
-            task_titles = all(:test, 'task-title')
-            expect(task_titles.count).to be 2
-            task_titles.each do |el|
-              expect(el.text).to match(/青りんご|りんごちゃん/)
-            end
-          end
+        task_titles = all(:test, 'task-title')
+
+        expect(task_titles.count).to be 2
+        task_titles.each do |el|
+          expect(el.text).to match(/青りんご|りんごちゃん/)
         end
       end
 
@@ -204,19 +188,15 @@ RSpec.describe "Tasks" do
         user = create(:user, :with_tasks_separate_title)
         login_as(user)
 
-        fill_in 'キーワード', with: '桃'
+        fill_in 'キーワード検索', with: '桃'
         click_button '検索'
         # TODO
         sleep(1)
-        wait_for_css_appear('.task-card') do
-          task_titles = []
-          within(:test, 'task-list') do
-            task_titles = all(:test, 'task-title')
-            expect(task_titles.count).to be 1
-          end
-          click_link task_titles[0].text
-          expect(page).to have_content('桃太郎')
-        end
+        task_titles = all(:test, 'task-title')
+
+        expect(task_titles.count).to be 1
+        click_button task_titles[0].text
+        expect(page).to have_content('桃太郎')
       end
     end
 
@@ -235,14 +215,12 @@ RSpec.describe "Tasks" do
         click_link '未着手のタスク'
         # TODO
         sleep(1)
-        wait_for_css_appear('.task-card') do
-          within(:test, 'task-list') do
-            task_titles = all(:test, 'task-title')
-            expect(task_titles.count).to be 2
-            task_titles.each do |el|
-              expect(el.text).to match(/スイカ|メロン/)
-            end
-          end
+
+        task_titles = all(:test, 'task-title')
+        expect(task_titles.count).to be 2
+        # TODO?
+        task_titles.each do |el|
+          expect(el.text).to match(/スイカ|メロン/)
         end
       end
 
@@ -258,14 +236,11 @@ RSpec.describe "Tasks" do
         click_link '着手しているタスク'
         # TODO
         sleep(1)
-        wait_for_css_appear('.task-card') do
-          within(:test, 'task-list') do
-            task_titles = all(:test, 'task-title')
-            expect(task_titles.count).to be 3
-            task_titles.each do |el|
-              expect(el.text).to match(/みかん|パイナップル|ぶどう/)
-            end
-          end
+        task_titles = all(:test, 'task-title')
+
+        expect(task_titles.count).to be 3
+        task_titles.each do |el|
+          expect(el.text).to match(/みかん|パイナップル|ぶどう/)
         end
       end
 
@@ -281,14 +256,11 @@ RSpec.describe "Tasks" do
         click_link '完了したタスク'
         # TODO
         sleep(1)
-        wait_for_css_appear('.task-card') do
-          within(:test, 'task-list') do
-            task_titles = all(:test, 'task-title')
-            expect(task_titles.count).to be 1
-            task_titles.each do |el|
-              expect(el.text).to match(/青りんご/)
-            end
-          end
+        task_titles = all(:test, 'task-title')
+
+        expect(task_titles.count).to be 1
+        task_titles.each do |el|
+          expect(el.text).to match(/青りんご/)
         end
       end
     end
@@ -321,25 +293,22 @@ RSpec.describe "Tasks" do
           task3 = create(:task, :due_day_after_tomorrow_task, title: 'りんごちゃん', user: user)
           create(:task, title: 'バナナ', user: user)
           login_as(user)
-          fill_in 'キーワード', with: 'りんご'
+          fill_in 'キーワード検索', with: 'りんご'
           click_button '検索'
           # TODO
           sleep(1)
           click_link '締切が近い順'
           # TODO
           sleep(1)
-          wait_for_css_appear('.task-card') do
-            within(:test, 'task-list') do
-              task_titles = all(:test, 'task-title')
-              expect(task_titles.count).to be 3
-              task_titles.each do |el|
-                expect(el.text).to match(/青りんご|毒りんご|りんごちゃん/)
-              end
-              expect(task_titles[0].text).to eq task1.title
-              expect(task_titles[1].text).to eq task3.title
-              expect(task_titles[2].text).to eq task2.title
-            end
+          task_titles = all(:test, 'task-title')
+
+          expect(task_titles.count).to be 3
+          task_titles.each do |el|
+            expect(el.text).to match(/青りんご|毒りんご|りんごちゃん/)
           end
+          expect(task_titles[0].text).to eq task1.title
+          expect(task_titles[1].text).to eq task3.title
+          expect(task_titles[2].text).to eq task2.title
         end
 
         it '検索結果を重要度の高い順に並び替えできる' do
@@ -348,25 +317,22 @@ RSpec.describe "Tasks" do
           task3 = create(:task, title: 'りんごちゃん', user: user, priority: 'low')
           create(:task, title: 'バナナ', user: user)
           login_as(user)
-          fill_in 'キーワード', with: 'りんご'
+          fill_in 'キーワード検索', with: 'りんご'
           click_button '検索'
           # TODO
           sleep(1)
           click_link '重要度の高い順'
           # TODO
           sleep(1)
-          wait_for_css_appear('.task-card') do
-            within(:test, 'task-list') do
-              task_titles = all(:test, 'task-title')
-              expect(task_titles.count).to be 3
-              task_titles.each do |el|
-                expect(el.text).to match(/青りんご|毒りんご|りんごちゃん/)
-              end
-              expect(task_titles[0].text).to eq task2.title
-              expect(task_titles[1].text).to eq task1.title
-              expect(task_titles[2].text).to eq task3.title
-            end
+          task_titles = all(:test, 'task-title')
+
+          expect(task_titles.count).to be 3
+          task_titles.each do |el|
+            expect(el.text).to match(/青りんご|毒りんご|りんごちゃん/)
           end
+          expect(task_titles[0].text).to eq task2.title
+          expect(task_titles[1].text).to eq task1.title
+          expect(task_titles[2].text).to eq task3.title
         end
 
         it '検索結果を重要度の低い順に並び替えできる' do
@@ -375,25 +341,22 @@ RSpec.describe "Tasks" do
           task3 = create(:task, title: 'りんごちゃん', user: user, priority: 'low')
           create(:task, title: 'バナナ', user: user)
           login_as(user)
-          fill_in 'キーワード', with: 'りんご'
+          fill_in 'キーワード検索', with: 'りんご'
           click_button '検索'
           # TODO
           sleep(1)
           click_link '重要度の低い順'
           # TODO
           sleep(1)
-          wait_for_css_appear('.task-card') do
-            within(:test, 'task-list') do
-              task_titles = all(:test, 'task-title')
-              expect(task_titles.count).to be 3
-              task_titles.each do |el|
-                expect(el.text).to match(/青りんご|毒りんご|りんごちゃん/)
-              end
-              expect(task_titles[0].text).to eq task3.title
-              expect(task_titles[1].text).to eq task1.title
-              expect(task_titles[2].text).to eq task2.title
-            end
+          task_titles = all(:test, 'task-title')
+
+          expect(task_titles.count).to be 3
+          task_titles.each do |el|
+            expect(el.text).to match(/青りんご|毒りんご|りんごちゃん/)
           end
+          expect(task_titles[0].text).to eq task3.title
+          expect(task_titles[1].text).to eq task1.title
+          expect(task_titles[2].text).to eq task2.title
         end
       end
 
@@ -407,21 +370,18 @@ RSpec.describe "Tasks" do
             create(:task, title: 'パイナップル', state: 'in_progress', user: user)
             create(:task, title: 'ぶどう', state: 'in_progress', user: user)
             login_as(user)
-            fill_in 'キーワード', with: 'りんご'
+            fill_in 'キーワード検索', with: 'りんご'
             click_button '検索'
             # TODO
             sleep(1)
             click_link '未着手のタスク'
             # TODO
             sleep(1)
-            wait_for_css_appear('.task-card') do
-              within(:test, 'task-list') do
-                task_titles = all(:test, 'task-title')
-                expect(task_titles.count).to be 2
-                task_titles.each do |el|
-                  expect(el.text).to match(/毒りんご|りんごの木/)
-                end
-              end
+            task_titles = all(:test, 'task-title')
+
+            expect(task_titles.count).to be 2
+            task_titles.each do |el|
+              expect(el.text).to match(/毒りんご|りんごの木/)
             end
           end
 
@@ -436,21 +396,18 @@ RSpec.describe "Tasks" do
             create(:tagging, tag: create(:tag, name: 'foo'), task: task2)
 
             login_as(user)
-            fill_in 'キーワード', with: 'りんご'
+            fill_in 'キーワード検索', with: 'りんご'
             click_button '検索'
             # TODO
             sleep(1)
             click_link 'foo'
             # TODO
             sleep(1)
-            wait_for_css_appear('.task-card') do
-              within(:test, 'task-list') do
-                task_titles = all(:test, 'task-title')
-                expect(task_titles.count).to be 2
-                task_titles.each do |el|
-                  expect(el.text).to match(/毒りんご|りんごの木/)
-                end
-              end
+            task_titles = all(:test, 'task-title')
+
+            expect(task_titles.count).to be 2
+            task_titles.each do |el|
+              expect(el.text).to match(/毒りんご|りんごの木/)
             end
           end
         end
@@ -464,7 +421,7 @@ RSpec.describe "Tasks" do
             create(:task, title: 'りんごちゃん', state: 'in_progress', user: user)
             create(:task, title: 'ぶどう', state: 'done', user: user)
             login_as(user)
-            fill_in 'キーワード', with: 'りんご'
+            fill_in 'キーワード検索', with: 'りんご'
             click_button '検索'
             # TODO
             sleep(1)
@@ -474,18 +431,15 @@ RSpec.describe "Tasks" do
             click_link '締切が近い順'
             # TODO
             sleep(1)
-            wait_for_css_appear('.task-card') do
-              within(:test, 'task-list') do
-                task_titles = all(:test, 'task-title')
-                expect(task_titles.count).to be 3
-                task_titles.each do |el|
-                  expect(el.text).to match(/青りんご|毒りんご|りんごの木/)
-                end
-                expect(task_titles[0].text).to eq task2.title
-                expect(task_titles[1].text).to eq task1.title
-                expect(task_titles[2].text).to eq task3.title
-              end
+            task_titles = all(:test, 'task-title')
+
+            expect(task_titles.count).to be 3
+            task_titles.each do |el|
+              expect(el.text).to match(/青りんご|毒りんご|りんごの木/)
             end
+            expect(task_titles[0].text).to eq task2.title
+            expect(task_titles[1].text).to eq task1.title
+            expect(task_titles[2].text).to eq task3.title
           end
 
           it 'ステータスで絞り込んで重要度で並び替えできる' do
@@ -497,7 +451,7 @@ RSpec.describe "Tasks" do
             create(:task, title: 'ぶどう', state: 'in_progress', priority: 'low', user: user)
 
             login_as(user)
-            fill_in 'キーワード', with: 'りんご'
+            fill_in 'キーワード検索', with: 'りんご'
             click_button '検索'
             # TODO
             sleep(1)
@@ -507,18 +461,15 @@ RSpec.describe "Tasks" do
             click_link '重要度の高い順'
             # TODO
             sleep(1)
-            wait_for_css_appear('.task-card') do
-              within(:test, 'task-list') do
-                task_titles = all(:test, 'task-title')
-                expect(task_titles.count).to be 3
-                task_titles.each do |el|
-                  expect(el.text).to match(/毒りんご|りんごの木|私はりんごが好きです/)
-                end
-                expect(task_titles[0].text).to eq task2.title
-                expect(task_titles[1].text).to eq task3.title
-                expect(task_titles[2].text).to eq task1.title
-              end
+            task_titles = all(:test, 'task-title')
+
+            expect(task_titles.count).to be 3
+            task_titles.each do |el|
+              expect(el.text).to match(/毒りんご|りんごの木|私はりんごが好きです/)
             end
+            expect(task_titles[0].text).to eq task2.title
+            expect(task_titles[1].text).to eq task3.title
+            expect(task_titles[2].text).to eq task1.title
           end
 
           it 'タグで絞り込んで締め切りに近い順に並び替えできる' do
@@ -533,7 +484,7 @@ RSpec.describe "Tasks" do
             create(:tagging, tag: create(:tag, name: 'foo'), task: task3)
 
             login_as(user)
-            fill_in 'キーワード', with: 'りんご'
+            fill_in 'キーワード検索', with: 'りんご'
             click_button '検索'
             # TODO
             sleep(1)
@@ -543,18 +494,15 @@ RSpec.describe "Tasks" do
             click_link '締切が近い順'
             # TODO
             sleep(1)
-            wait_for_css_appear('.task-card') do
-              within(:test, 'task-list') do
-                task_titles = all(:test, 'task-title')
-                expect(task_titles.count).to be 3
-                task_titles.each do |el|
-                  expect(el.text).to match(/毒りんご|りんごの木|私はりんごが好きです/)
-                end
-                expect(task_titles[0].text).to eq task2.title
-                expect(task_titles[1].text).to eq task1.title
-                expect(task_titles[2].text).to eq task3.title
-              end
+            task_titles = all(:test, 'task-title')
+
+            expect(task_titles.count).to be 3
+            task_titles.each do |el|
+              expect(el.text).to match(/毒りんご|りんごの木|私はりんごが好きです/)
             end
+            expect(task_titles[0].text).to eq task2.title
+            expect(task_titles[1].text).to eq task1.title
+            expect(task_titles[2].text).to eq task3.title
           end
 
           it 'タグで絞り込んで重要度で並び替えできる' do
@@ -569,7 +517,7 @@ RSpec.describe "Tasks" do
             create(:tagging, tag: create(:tag, name: 'foo'), task: task3)
 
             login_as(user)
-            fill_in 'キーワード', with: 'りんご'
+            fill_in 'キーワード検索', with: 'りんご'
             click_button '検索'
             # TODO
             sleep(1)
@@ -579,18 +527,15 @@ RSpec.describe "Tasks" do
             click_link '重要度の高い順'
             # TODO
             sleep(1)
-            wait_for_css_appear('.task-card') do
-              within(:test, 'task-list') do
-                task_titles = all(:test, 'task-title')
-                expect(task_titles.count).to be 3
-                task_titles.each do |el|
-                  expect(el.text).to match(/毒りんご|りんごの木|私はりんごが好きです/)
-                end
-                expect(task_titles[0].text).to eq task3.title
-                expect(task_titles[1].text).to eq task1.title
-                expect(task_titles[2].text).to eq task2.title
-              end
+            task_titles = all(:test, 'task-title')
+
+            expect(task_titles.count).to be 3
+            task_titles.each do |el|
+              expect(el.text).to match(/毒りんご|りんごの木|私はりんごが好きです/)
             end
+            expect(task_titles[0].text).to eq task3.title
+            expect(task_titles[1].text).to eq task1.title
+            expect(task_titles[2].text).to eq task2.title
           end
         end
       end
@@ -614,18 +559,15 @@ RSpec.describe "Tasks" do
           click_link '締切が近い順'
           # TODO
           sleep(1)
-          wait_for_css_appear('.task-card') do
-            within(:test, 'task-list') do
-              task_titles = all(:test, 'task-title')
-              expect(task_titles.count).to be 3
-              task_titles.each do |el|
-                expect(el.text).to match(/パイナップル|ぶどう|みかん/)
-              end
-              expect(task_titles[0].text).to eq 'パイナップル'
-              expect(task_titles[1].text).to eq 'ぶどう'
-              expect(task_titles[2].text).to eq 'みかん'
-            end
+          task_titles = all(:test, 'task-title')
+
+          expect(task_titles.count).to be 3
+          task_titles.each do |el|
+            expect(el.text).to match(/パイナップル|ぶどう|みかん/)
           end
+          expect(task_titles[0].text).to eq 'パイナップル'
+          expect(task_titles[1].text).to eq 'ぶどう'
+          expect(task_titles[2].text).to eq 'みかん'
         end
 
         it '検索結果を重要度で並び替えできる' do
@@ -642,18 +584,15 @@ RSpec.describe "Tasks" do
           click_link '重要度の高い順'
           # TODO
           sleep(1)
-          wait_for_css_appear('.task-card') do
-            within(:test, 'task-list') do
-              task_titles = all(:test, 'task-title')
-              expect(task_titles.count).to be 3
-              task_titles.each do |el|
-                expect(el.text).to match(/パイナップル|ぶどう|みかん/)
-              end
-              expect(task_titles[0].text).to eq 'パイナップル'
-              expect(task_titles[1].text).to eq 'みかん'
-              expect(task_titles[2].text).to eq 'ぶどう'
-            end
+          task_titles = all(:test, 'task-title')
+
+          expect(task_titles.count).to be 3
+          task_titles.each do |el|
+            expect(el.text).to match(/パイナップル|ぶどう|みかん/)
           end
+          expect(task_titles[0].text).to eq 'パイナップル'
+          expect(task_titles[1].text).to eq 'みかん'
+          expect(task_titles[2].text).to eq 'ぶどう'
         end
       end
 
@@ -672,12 +611,9 @@ RSpec.describe "Tasks" do
           click_link 'foo'
           # TODO
           sleep(1)
-          wait_for_css_appear('.task-card') do
-            within(:test, 'task-list') do
-              task_titles = all(:test, 'task-title')
-              expect(task_titles.count).to be 2
-            end
-          end
+          task_titles = all(:test, 'task-title')
+
+          expect(task_titles.count).to be 2
         end
       end
     end
@@ -701,18 +637,15 @@ RSpec.describe "Tasks" do
           click_link '締切が近い順'
           # TODO
           sleep(1)
-          wait_for_css_appear('.task-card') do
-            within(:test, 'task-list') do
-              task_titles = all(:test, 'task-title')
-              expect(task_titles.count).to be 3
-              task_titles.each do |el|
-                expect(el.text).to match(/りんご|バナナ|みかん/)
-              end
-              expect(task_titles[0].text).to eq task2.title
-              expect(task_titles[1].text).to eq task3.title
-              expect(task_titles[2].text).to eq task1.title
-            end
+          task_titles = all(:test, 'task-title')
+
+          expect(task_titles.count).to be 3
+          task_titles.each do |el|
+            expect(el.text).to match(/りんご|バナナ|みかん/)
           end
+          expect(task_titles[0].text).to eq task2.title
+          expect(task_titles[1].text).to eq task3.title
+          expect(task_titles[2].text).to eq task1.title
         end
 
         it '検索結果を優先度が高い順に並び替えできる' do
@@ -730,18 +663,15 @@ RSpec.describe "Tasks" do
           click_link '重要度の高い順'
           # TODO
           sleep(1)
-          wait_for_css_appear('.task-card') do
-            within(:test, 'task-list') do
-              task_titles = all(:test, 'task-title')
-              expect(task_titles.count).to be 3
-              task_titles.each do |el|
-                expect(el.text).to match(/りんご|バナナ|みかん/)
-              end
-              expect(task_titles[0].text).to eq task3.title
-              expect(task_titles[1].text).to eq task1.title
-              expect(task_titles[2].text).to eq task2.title
-            end
+          task_titles = all(:test, 'task-title')
+
+          expect(task_titles.count).to be 3
+          task_titles.each do |el|
+            expect(el.text).to match(/りんご|バナナ|みかん/)
           end
+          expect(task_titles[0].text).to eq task3.title
+          expect(task_titles[1].text).to eq task1.title
+          expect(task_titles[2].text).to eq task2.title
         end
 
         it '検索結果を優先度が低い順に並び替えできる' do
@@ -759,18 +689,15 @@ RSpec.describe "Tasks" do
           click_link '重要度の低い順'
           # TODO
           sleep(1)
-          wait_for_css_appear('.task-card') do
-            within(:test, 'task-list') do
-              task_titles = all(:test, 'task-title')
-              expect(task_titles.count).to be 3
-              task_titles.each do |el|
-                expect(el.text).to match(/りんご|バナナ|みかん/)
-              end
-              expect(task_titles[0].text).to eq task2.title
-              expect(task_titles[1].text).to eq task1.title
-              expect(task_titles[2].text).to eq task3.title
-            end
+          task_titles = all(:test, 'task-title')
+
+          expect(task_titles.count).to be 3
+          task_titles.each do |el|
+            expect(el.text).to match(/りんご|バナナ|みかん/)
           end
+          expect(task_titles[0].text).to eq task2.title
+          expect(task_titles[1].text).to eq task1.title
+          expect(task_titles[2].text).to eq task3.title
         end
       end
 
@@ -790,14 +717,11 @@ RSpec.describe "Tasks" do
           click_link '完了したタスク'
           # TODO
           sleep(1)
-          wait_for_css_appear('.task-card') do
-            within(:test, 'task-list') do
-              task_titles = all(:test, 'task-title')
-              expect(task_titles.count).to be 1
-              task_titles.each do |el|
-                expect(el.text).to match(/りんご/)
-              end
-            end
+          task_titles = all(:test, 'task-title')
+
+          expect(task_titles.count).to be 1
+          task_titles.each do |el|
+            expect(el.text).to match(/りんご/)
           end
         end
       end

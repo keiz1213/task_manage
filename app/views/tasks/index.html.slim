@@ -7,24 +7,19 @@
       li.navitem = link_to '締切が近い順', tasks_path(search: { keyword: @search_form.keyword, sort_by: 'deadline', state: @search_form.state, tag_name: @search_form.tag_name }), method: 'get', class: 'nav-link'
       li.navitem = link_to 'リセット', tasks_path, method: 'get', class: 'nav-link'
   .card.shadow.mt-3
-    .card-header タスク一覧
+    .card-header.text-black-50 タスク一覧
     .card-body.mx-3
       .row
         .col-3.pb-2.text-center
           span.bi-pencil.text-black-50
-            span.text-black-50.ms-1 タイトル
         .col-1.pb-2.text-center
           span.bi-check2-circle.text-black-50
-            span.text-black-50.ms-1 ステータス
         .col-4.pb-2.text-center
           span.bi-tag.text-black-50
-            span.text-black-50.ms-1 タグ
         .col-2.pb-2.text-center
           span.bi-hourglass-split.text-black-50
-            span.text-black-50.ms-1 締め切り
         .col-1.pb-2.text-center
           span.bi-exclamation-circle.text-black-50
-            span.text-black-50.ms-1 重要度
       div id="task-list"
       - @tasks.each do |task|
         = render partial: 'task', locals: { task: task }

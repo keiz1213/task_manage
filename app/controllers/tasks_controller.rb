@@ -31,8 +31,7 @@ class TasksController < ApplicationController
     tag_list = Tag.build_tag_list(params[:task][:tag_name])
     if @task.update(task_params)
       @task.save_tag(tag_list)
-      flash[:success] = "タスク: #{@task.title}を更新しました"
-      redirect_to tasks_path
+      flash.now[:success] = "タスク: #{@task.title}を更新しました"
     else
       render :edit, status: :unprocessable_entity
     end

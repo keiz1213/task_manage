@@ -1,15 +1,16 @@
-.col
-  .card.my-3.mx-auto.task-card
-    .card-header
-      .d-flex.justify-content-between
-        h5.card-title.my-auto = link_to task.title, task, data: { test: 'task-title' }, class: "text-decoration-none"
-        = priority_badge(task)
-    .card-body
-      = render partial: 'tasks/state', locals: { task: task }
-      - task.tags.each do |tag|
-        span.badge.me-1.mb-2.text-bg-secondary.fs-6 = tag.name
-      .d-flex.justify-content-between
-        = "締め切り: " + l(task.deadline, format: :long)
-        .
-          = link_to '編集', edit_task_path(task), class: 'mx-1 text-decoration-none'
-          = link_to '削除', task, data: { turbo_method: :delete, turbo_confirm: '本当に削除しますか？' }, class: 'mx-1 text-decoration-none'
+= turbo_frame_tag task
+  .col
+    .card.my-3.mx-auto.task-card
+      .card-header
+        .d-flex.justify-content-between
+          h5.card-title.my-auto = link_to task.title, task, data: { test: 'task-title', turbo: false }, class: "text-decoration-none"
+          = priority_badge(task)
+      .card-body
+        = render partial: 'tasks/state', locals: { task: task }
+        - task.tags.each do |tag|
+          span.badge.me-1.mb-2.text-bg-secondary.fs-6 = tag.name
+        .d-flex.justify-content-between
+          = "締め切り: " + l(task.deadline, format: :long)
+          .
+            = link_to '編集', edit_task_path(task), class: 'mx-1 text-decoration-none', data: { turbo_frame: 'modal' }
+            = link_to '削除', task, data: { turbo_method: :delete, turbo_confirm: '本当に削除しますか？' }, class: 'mx-1 text-decoration-none'

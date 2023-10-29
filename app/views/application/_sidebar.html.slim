@@ -18,6 +18,5 @@
     span.bi-arrows-angle-contract.text-black-50
       span.fs-6.mb-1.text-black-50.ms-1 タグで絞り込み
       br
-    .mt-2
-      - user_tag_names(current_user).each do |tag_name|
-        = link_to_search_by_tag_name(tag_name, search_form)
+    .mt-2 id="user-tag-names"
+      = render 'user_tag_names', search_form: search_form

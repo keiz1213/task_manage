@@ -1,11 +1,8 @@
 class TasksController < ApplicationController
-  before_action :set_task, only: %i[show edit update destroy update_state]
+  before_action :set_task, only: %i[edit update destroy update_state]
 
   def index
     @tasks = @search_form.search(current_user).page(params[:page])
-  end
-
-  def show
   end
 
   def new

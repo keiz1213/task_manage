@@ -21,8 +21,7 @@ class TasksController < ApplicationController
     tag_list = Tag.build_tag_list(params[:task][:tag_name])
     if @task.save
       @task.save_tag(tag_list)
-      flash[:success] = "タスク: #{@task.title}を作成しました"
-      redirect_to tasks_path
+      flash.now[:success] = "タスク: #{@task.title}を作成しました"
     else
       render :new, status: :unprocessable_entity
     end

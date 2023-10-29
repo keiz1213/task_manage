@@ -1,6 +1,2 @@
-h1 tasks#new!
-
-.nav
-  = link_to '一覧', tasks_path, class: 'nav-link'
-
-= render partial: 'form', locals: { task: @task }
+= render 'modal', title: '新規作成'
+  = render 'form', task: @task

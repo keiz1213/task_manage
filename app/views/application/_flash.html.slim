@@ -1,0 +1,4 @@
+- if flash.any?
+  - flash.each do |message_type, message|
+    .col.mb-4.ms-4
+      = content_tag(:div, message, class: "alert alert-#{message_type}", id: 'flash')

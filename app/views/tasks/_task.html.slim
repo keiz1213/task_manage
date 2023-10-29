@@ -1,7 +1,7 @@
 = turbo_frame_tag task
     .row.py.border-top.accordion id="accordion-#{task.id}"
       .col-3.my-auto
-        button.btn.btn-link type="button" data-bs-toggle="collapse" data-bs-target="#detail-#{task.id}" = task.title
+        button.btn.btn-link type="button" data-test="task-title" data-bs-toggle="collapse" data-bs-target="#detail-#{task.id}" = task.title
       .col-1.my-auto.text-center
         = render partial: 'tasks/state', locals: { task: task }
       .col-4.my-auto.pt-2

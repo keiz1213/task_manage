@@ -44,7 +44,7 @@ class TasksController < ApplicationController
 
   def update_state
     @task.update_state
-    render turbo_stream: turbo_stream.replace(@task, partial: 'state', locals: { task: @task })
+    render turbo_stream: turbo_stream.replace("task-state-#{@task.id}", partial: 'state', locals: { task: @task })
   end
 
   private

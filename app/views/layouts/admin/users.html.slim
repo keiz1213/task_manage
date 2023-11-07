@@ -20,8 +20,7 @@ html
               = link_to 'タスク管理へ', tasks_path, class: 'text-decoration-none mx-2'
               = link_to 'ログアウト', logout_path, data: { turbo_method: :delete }, class: 'text-decoration-none mx-2'
             .col.mb-4.ms-4
-              - if flash.any?
-                - flash.each do |message_type, message|
-                  .col.mb-4.ms-4
-                    = content_tag(:div, message, class: "alert alert-#{message_type}") 
+              div id="flash"
+                = render 'flash'
               = yield
+    = turbo_frame_tag 'modal'

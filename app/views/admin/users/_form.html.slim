@@ -1,23 +1,24 @@
-- if user.errors.present?
-  ul#error_explanation
-    - user.errors.full_messages.each do |message|
-      li = message
+= turbo_frame_tag user
+  - if user.errors.present?
+    ul#error_explanation
+      - user.errors.full_messages.each do |message|
+        li = message
 
-= form_with model: [:admin, user] do |f|
-  .form-group.mb-3
-    = f.label :name
-    = f.text_field :name, class: 'form-control'
-  .form-group.mb-3
-    = f.label :email
-    = f.email_field :email, class: 'form-control'
-  .form-group.mb-3
-    = f.label :password
-    = f.password_field :password, class: 'form-control'
-  .form-group.mb-3
-    = f.label :password_confirmation
-    = f.password_field :password_confirmation, class: 'form-control'
-  .form-check.mb-3
-    = f.label :admin, class: 'form-check-label' do
-      = f.check_box :admin, class: 'form-check-input'
-      | 管理者権限
-  = f.submit nil, class: 'btn btn-primary'
+  = form_with model: [:admin, user], data: { action: 'turbo:submit-end->modal#close' } do |f|
+    .form-group.mb-3
+      = f.label :name
+      = f.text_field :name, class: 'form-control'
+    .form-group.mb-3
+      = f.label :email
+      = f.email_field :email, class: 'form-control'
+    .form-group.mb-3
+      = f.label :password
+      = f.password_field :password, class: 'form-control'
+    .form-group.mb-3
+      = f.label :password_confirmation
+      = f.password_field :password_confirmation, class: 'form-control'
+    .form-check.mb-3
+      = f.label :admin, class: 'form-check-label' do
+        = f.check_box :admin, class: 'form-check-input'
+        | 管理者権限
+    = f.submit nil, class: 'btn btn-primary'

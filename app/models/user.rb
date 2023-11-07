@@ -20,6 +20,14 @@ class User < ApplicationRecord
     SecureRandom.urlsafe_base64
   end
 
+  def self.find_or_create_guest_user
+    find_or_create_by(email: 'guest@example.com') do |user|
+      user.name = 'guest'
+      user.password = 'password'
+      user.admin = false
+    end
+  end
+
   def remember
     self.remember_token = User.new_token
     update_attribute(:remember_digest, User.digest(remember_token))

@@ -12,3 +12,4 @@
     span ログインしたままにする
 
   = f.submit 'ログイン', class: 'btn btn-primary w-100'
+  = link_to 'ゲストとしてログイン', guest_login_path, data: { 'turbo-method': :post }, class: 'btn btn-info w-100 mt-4'

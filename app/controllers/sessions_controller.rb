@@ -25,4 +25,11 @@ class SessionsController < ApplicationController
     flash[:success] = 'ログアウトしました'
     redirect_to login_path, status: :see_other
   end
+
+  def guest_login
+    guest = User.find_by(email: 'sample@example.com')
+    login(guest)
+    flash[:success] = 'ゲストとしてログインしました。自由にお使いください。'
+    redirect_to tasks_path
+  end
 end

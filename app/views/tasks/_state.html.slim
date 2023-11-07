@@ -1,3 +1,6 @@
-= turbo_frame_tag "task-state-#{task.id}" do
-  = form_with model: task, url: [:update_state, task], class: 'my-2' do |f|
-    = submit_state(f,task)
+- if task.user.id == current_user.id
+  = turbo_frame_tag "task-state-#{task.id}" do
+    = form_with model: task, url: [:update_state, task], class: 'my-2' do |f|
+      = submit_state(f,task)
+- else
+  = state_budge(task)

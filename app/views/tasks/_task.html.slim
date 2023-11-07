@@ -12,9 +12,10 @@
       .col-1.my-auto.text-center
         = priority_badge(task)
       .col-1.my-auto.px-1
-        .d-flex.justify-content-end
-          = link_to '編集', edit_task_path(task), class: 'mx-1 text-decoration-none', data: { turbo_frame: 'modal' }
-          = link_to '削除', task, data: { turbo_method: :delete, turbo_confirm: '本当に削除しますか？' }, class: 'mx-1 text-decoration-none'
+        - if task.user.id == current_user.id
+          .d-flex.justify-content-end
+            = link_to '編集', edit_task_path(task), class: 'mx-1 text-decoration-none', data: { turbo_frame: 'modal' }
+            = link_to '削除', task, data: { turbo_method: :delete, turbo_confirm: '本当に削除しますか？' }, class: 'mx-1 text-decoration-none'
       .collapse id="detail-#{task.id}" data-bs-parent="#accordion-#{task.id}"
         p.text-black-50 = '説明 : ' + task.description
         p.text-black-50 = '作成日 : ' + l(task.created_at, format: :long)

@@ -6,6 +6,14 @@ FactoryBot.define do
     password_confirmation { '12345678' }
     admin { true }
 
+    trait :guest_user do
+      name { 'guest-user' }
+      email { 'sample@example.com' }
+      password { '11111111' }
+      password_confirmation { '11111111' }
+      admin { false }
+    end
+
     trait :with_tagged_tasks do
       after(:create) { |user| create(:task, :with_tags, user: user) }
     end

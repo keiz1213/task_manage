@@ -23,7 +23,6 @@ class Admin::UsersController < ApplicationController
 
     if @user.save
       flash[:success] = "ユーザー: #{@user.name}を登録しました"
-      redirect_to admin_users_path
     else
       render :new, status: :unprocessable_entity
     end

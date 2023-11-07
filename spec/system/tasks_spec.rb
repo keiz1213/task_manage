@@ -54,11 +54,10 @@ RSpec.describe "Tasks" do
 
     it 'タスクの更新' do
       user = create(:user)
-      task = create(:task, user: user)
+      create(:task, user: user, state: 'in_progress')
       login_as(user)
 
       expect {
-        click_button task.title
         click_link '編集'
         fill_in 'タイトル', with: 'test'
         choose '高'
@@ -69,7 +68,7 @@ RSpec.describe "Tasks" do
         expect(page).to have_content('タスク: testを更新しました')
         expect(page).to have_content('test')
         expect(page).to have_content('重要度: 高')
-        expect(page.find(:test, 'update-state').value).to eq '未着手'
+        expect(page.find(:test, 'update-state').value).to eq '着手'
         expect(page).to have_content('2200/01/02 03:04')
         expect(page).to have_content('hoge')
         expect(page).to have_content('piyo')

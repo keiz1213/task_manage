@@ -8,6 +8,7 @@ class Admin::UsersController < ApplicationController
   end
 
   def show
+    @tasks = @user.tasks.recent.page(params[:page])
   end
 
   def new

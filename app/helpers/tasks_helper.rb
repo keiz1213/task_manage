@@ -25,6 +25,19 @@ module TasksHelper
     form.submit t("activerecord.attributes.task.states.#{task.state}"), data: { test: 'update-state' }, class: classes
   end
 
+  def state_budge(task)
+    classes = %w[badge w-100 p-2]
+    case task.state
+    when 'not_started'
+      classes << 'text-bg-secondary'
+    when 'in_progress'
+      classes << 'text-bg-primary'
+    when 'done'
+      classes << 'text-bg-success'
+    end
+    tag.span(class: classes) { t("activerecord.attributes.task.states.#{task.state}") }
+  end
+
   def link_to_search_by_state(text, state, search_form)
     classes = %w[btn]
     classes << 'active' if search_form.state == state

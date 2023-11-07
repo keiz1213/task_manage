@@ -5,7 +5,7 @@ table.table
         td = @user.name
       tr
         th email
-        td = simple_format(h(@user.email), {}, sanitaize: false )
+        td = simple_format(h(@user.email), { class: 'mb-0' }, sanitaize: false )
       tr
         th ロール
         td = @user.admin? ? '管理者' : '一般'
@@ -17,6 +17,22 @@ table.table
         td = l(@user.updated_at, format: :long)
 = link_to '編集', edit_admin_user_path(@user), class: 'btn btn-primary mx-1'
 = link_to '削除', [:admin, @user], data: { turbo_method: :delete, turbo_confirm: '本当に削除しますか？' }, class: 'btn btn-primary mx-1'
-.row.row-cols-3 data-test="task-list"
-  - @user.tasks.each do |task|
-    .col = render partial: 'tasks/task', locals: { task: task }
+.card.shadow.mt-3
+  .card-header.text-black-50 タスク一覧
+  .card-body.mx-3
+    .row
+      .col-3.pb-2.text-center
+        span.bi-pencil.text-black-50
+      .col-1.pb-2.text-center
+        span.bi-check2-circle.text-black-50
+      .col-4.pb-2.text-center
+        span.bi-tag.text-black-50
+      .col-2.pb-2.text-center
+        span.bi-hourglass-split.text-black-50
+      .col-1.pb-2.text-center
+        span.bi-exclamation-circle.text-black-50
+    div id="task-list"
+    - @tasks.each do |task|
+      = render partial: 'task', locals: { task: task }
+  .d-flex.justify-content-end.my-4.me-3
+    = paginate @tasks

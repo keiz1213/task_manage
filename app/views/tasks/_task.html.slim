@@ -3,7 +3,7 @@
       .col-3.my-auto
         button.btn.btn-link type="button" data-test="task-title" data-bs-toggle="collapse" data-bs-target="#detail-#{task.id}" = task.title
       .col-1.my-auto.text-center
-        = render partial: 'tasks/state', locals: { task: task }
+        = render partial: 'state', locals: { task: task }
       .col-4.my-auto.pt-2
         - task.tags.each do |tag|
           span.badge.me-1.mb-2.text-bg-secondary.fs-6 = tag.name

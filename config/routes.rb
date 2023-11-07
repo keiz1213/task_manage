@@ -8,6 +8,9 @@ Rails.application.routes.draw do
       patch :update_state
     end
   end
+  namespace :guest do
+    post '/login', to: 'sessions#create'
+  end
   get '/login', to: 'sessions#new'
   post '/login', to: 'sessions#create'
   delete '/logout', to: 'sessions#destroy'

@@ -22,7 +22,7 @@ class Admin::UsersController < ApplicationController
     @user = User.new(user_params)
 
     if @user.save
-      flash[:success] = "ユーザー: #{@user.name}を登録しました"
+      flash.now[:success] = "ユーザー: #{@user.name}を登録しました"
     else
       render :new, status: :unprocessable_entity
     end
@@ -30,8 +30,7 @@ class Admin::UsersController < ApplicationController
 
   def update
     if @user.update(user_params)
-      flash[:success] = "ユーザー: #{@user.name}を更新しました"
-      redirect_to admin_users_path
+      flash.now[:success] = "ユーザー: #{@user.name}を更新しました"
     else
       render :edit, status: :unprocessable_entity
     end

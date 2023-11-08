@@ -42,7 +42,6 @@ class Admin::UsersController < ApplicationController
     else
       flash[:danger] = @user.errors.full_messages[0]
     end
-    redirect_to admin_users_path
   end
 
   private

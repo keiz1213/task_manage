@@ -38,9 +38,14 @@ class Admin::UsersController < ApplicationController
 
   def destroy
     if @user.destroy
-      flash[:success] = "ユーザー: #{@user.name}を削除しました"
+      if request.referer.match? %r{/admin/users/\d+}
+        flash[:success] = "ユーザー: #{@user.name}を削除しました"
+        redirect_to admin_users_path
+      else
+        flash.now[:success] = "ユーザー: #{@user.name}を削除しました"
+      end
     else
-      flash[:danger] = @user.errors.full_messages[0]
+      flash.now[:danger] = @user.errors.full_messages[0]
     end
   end
 

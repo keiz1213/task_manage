@@ -1,0 +1,8 @@
+- if request.referer.match? /admin\/users\/\d+/
+  = turbo_stream.update "user-name", @user.name
+  = turbo_stream.update "user-email", @user.email
+  = turbo_stream.update "user-role", @user.admin ? '管理者' : '一般'
+  = turbo_stream.update "user-updated-at", l(@user.updated_at, format: :long)
+- else
+  = turbo_stream.replace @user
+= turbo_stream.update 'flash', partial: 'flash'

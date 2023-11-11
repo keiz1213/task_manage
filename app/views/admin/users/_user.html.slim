@@ -1,14 +1,16 @@
-.card.my-3.mx-auto.task-card
-  .card-header.bg-primary
-    .d-flex.justify-content-between
-      h5.card-title.my-auto = link_to user.name, [:admin, user], data: { test: 'user-title' }, class: "text-decoration-none link-light"
-      - if user.admin?
-        span.badge.rounded-pill.my-auto.text-bg-light
-          | 管理者
-  .card-body
-    span data-test="task-count" = "タスク数: #{user.tasks.length}"
-    .d-flex.justify-content-between
-      = "登録日: #{l(user.created_at, format: :long)}"
-      .
-        = link_to '編集', edit_admin_user_path(user), class: 'mx-1 text-decoration-none'
-        = link_to '削除', [:admin, user], data: { turbo_method: :delete, turbo_confirm: '本当に削除しますか？' }, class: 'mx-1 text-decoration-none'
+= turbo_frame_tag user
+  .col
+    .card.my-3.mx-auto
+      .card-header.bg-primary
+        .d-flex.justify-content-between
+          h5.card-title.my-auto = link_to user.name, [:admin, user], data: { test: 'user-title', turbo: false }, class: "text-decoration-none link-light"
+          - if user.admin?
+            span.badge.rounded-pill.my-auto.text-bg-light
+              | 管理者
+      .card-body
+        span data-test="task-count" = "タスク数: #{user.tasks.length}"
+        .d-flex.justify-content-between
+          = "登録日: #{l(user.created_at, format: :long)}"
+          div
+            = link_to '編集', edit_admin_user_path(user), class: 'mx-1 text-decoration-none', data: { turbo_frame: 'modal' }
+            = link_to '削除', [:admin, user], data: { turbo_method: :delete, turbo_confirm: '本当に削除しますか？' }, class: 'mx-1 text-decoration-none'

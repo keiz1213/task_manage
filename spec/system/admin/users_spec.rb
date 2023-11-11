@@ -78,7 +78,7 @@ RSpec.describe "Admin::Users" do
     end
 
     describe 'ユーザーの更新' do
-      it '管理者はユーザーを更新できる' do
+      it '管理者はユーザーをユーザー詳細画面から更新できる' do
         user = create(:user, name: '中村')
         click_link 'ユーザー管理へ'
         click_link user.name
@@ -90,14 +90,29 @@ RSpec.describe "Admin::Users" do
         click_button '更新する'
 
         expect(page).to have_content('ユーザー: 中村2を更新しました')
-        click_link '中村2'
         expect(page).to have_content('中村2')
         expect(page).to have_content('nakamura@example.com')
+      end
+
+      it '管理者はユーザーをユーザー一覧画面から更新できる' do
+        user = create(:user, name: '中村')
+        click_link 'ユーザー管理へ'
+        within "#user_#{user.id}" do
+          click_link '編集'
+        end
+        fill_in 'Name', with: '中村2'
+        fill_in 'Email', with: 'nakamura@example.com'
+        fill_in 'Password', with: 'password'
+        fill_in 'Password confirmation', with: 'password'
+        click_button '更新する'
+
+        expect(page).to have_content('ユーザー: 中村2を更新しました')
+        expect(page).to have_content('中村2')
       end
     end
 
     describe 'ユーザーの削除' do
-      it '管理者はユーザーを削除できる' do
+      it '管理者はユーザーをユーザー詳細画面から削除できる' do
         user = create(:user, name: '中村')
         click_link 'ユーザー管理へ'
         click_link user.name
@@ -106,8 +121,29 @@ RSpec.describe "Admin::Users" do
           accept_confirm do
             click_link '削除'
           end
-          expect(page).to have_content("ユーザー: #{user.name}を削除しました")
+          # TODO
+          sleep(1)
         }.to change(User, :count).by(-1)
+        expect(page).to have_content("ユーザー: #{user.name}を削除しました")
+        expect(page).to have_current_path '/admin/users'
+        expect(page).not_to have_link('中村')
+      end
+
+      it '管理者はユーザーをユーザー一覧画面から削除できる' do
+        user = create(:user, name: '中村')
+        click_link 'ユーザー管理へ'
+        within "#user_#{user.id}" do
+          expect {
+            accept_confirm do
+              click_link '削除'
+            end
+            # TODO
+            sleep(1)
+          }.to change(User, :count).by(-1)
+        end
+        expect(page).to have_content("ユーザー: #{user.name}を削除しました")
+        expect(page).to have_current_path '/admin/users'
+        expect(page).not_to have_link('中村')
       end
 
       it '最後の管理者は削除できない' do

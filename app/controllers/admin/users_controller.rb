@@ -4,7 +4,7 @@ class Admin::UsersController < ApplicationController
   before_action :set_user, only: %i[show edit update destroy]
 
   def index
-    @users = User.preload(:tasks)
+    @users = User.preload(:tasks).recent
   end
 
   def show
@@ -22,8 +22,7 @@ class Admin::UsersController < ApplicationController
     @user = User.new(user_params)
 
     if @user.save
-      flash[:success] = "ユーザー: #{@user.name}を登録しました"
-      redirect_to admin_users_path
+      flash.now[:success] = "ユーザー: #{@user.name}を登録しました"
     else
       render :new, status: :unprocessable_entity
     end
@@ -31,8 +30,7 @@ class Admin::UsersController < ApplicationController
 
   def update
     if @user.update(user_params)
-      flash[:success] = "ユーザー: #{@user.name}を更新しました"
-      redirect_to admin_users_path
+      flash.now[:success] = "ユーザー: #{@user.name}を更新しました"
     else
       render :edit, status: :unprocessable_entity
     end
@@ -40,11 +38,15 @@ class Admin::UsersController < ApplicationController
 
   def destroy
     if @user.destroy
-      flash[:success] = "ユーザー: #{@user.name}を削除しました"
+      if request.referer.match? %r{/admin/users/\d+}
+        flash[:success] = "ユーザー: #{@user.name}を削除しました"
+        redirect_to admin_users_path
+      else
+        flash.now[:success] = "ユーザー: #{@user.name}を削除しました"
+      end
     else
-      flash[:danger] = @user.errors.full_messages[0]
+      flash.now[:danger] = @user.errors.full_messages[0]
     end
-    redirect_to admin_users_path
   end
 
   private

@@ -2,6 +2,7 @@ ja:
   activerecord:
     models:
       task: タスク
+      user: ユーザー
     attributes:
       task:
         title: タイトル
@@ -18,6 +19,11 @@ ja:
           in_progress: 着手
           done: 完了
         tag: タグ
+      user:
+        name: 名前
+        email: Eメール
+        password: パスワード
+        password_confirmation: パスワード(確認)
   activemodel:
     attributes:
       task_search_form:

@@ -28,7 +28,7 @@
       <br>
       = f.datetime_local_field :deadline, class: 'form-control', id: 'task_deadline', step: 'any'
     .form-group.mb-3
-      = f.label :tag_name, class: 'control-label'
+      = f.label :tag, class: 'control-label'
       label.form-text.mx-3
         | ※ タグをカンマ(,)区切りで複数登録できます
       = f.text_field :tag_name, value: @jointed_tag_names, class: 'form-control'

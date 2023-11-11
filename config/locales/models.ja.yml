@@ -17,6 +17,7 @@ ja:
           not_started: 未着手
           in_progress: 着手
           done: 完了
+        tag: タグ
   activemodel:
     attributes:
       task_search_form:

@@ -2,7 +2,7 @@
 ## Task Manager
 ![TaskManager](https://github.com/keiz1213/task_manager/assets/72614612/af30f73c-b6d0-4283-bf7c-4316dd284f3b)
 
-[Task Manager](task-manage-jbnv.onrender.com)
+[Task Manager](https://task-manage-jbnv.onrender.com/login)
 ## 開発環境
 - Ruby 3.1.3
 - Ruby on Rails 7.0.8

@@ -765,5 +765,42 @@ RSpec.describe "Tasks" do
         expect(find(:test, 'update-state').value).to eq '未着手'
       end
     end
+
+    it '締め切り前のタスクのステータスを変更できる' do
+      create(:task, :done_task, user: user)
+      login_as(user)
+      expect(find(:test, 'update-state').value).to eq '完了'
+      click_button '完了'
+      # TODO
+      sleep(1)
+      expect(find(:test, 'update-state').value).to eq '未着手'
+      click_button '未着手'
+      # TODO
+      sleep(1)
+      expect(find(:test, 'update-state').value).to eq '着手'
+      click_button '着手'
+      # TODO
+      sleep(1)
+      expect(find(:test, 'update-state').value).to eq '完了'
+    end
+
+    it '締め切り後のタスクもステータスを変更できる' do
+      task = create(:task, :done_task, user: user)
+      task.update_attribute('deadline', 1.day.ago)
+      login_as(user)
+      expect(find(:test, 'update-state').value).to eq '完了'
+      click_button '完了'
+      # TODO
+      sleep(1)
+      expect(find(:test, 'update-state').value).to eq '未着手'
+      click_button '未着手'
+      # TODO
+      sleep(1)
+      expect(find(:test, 'update-state').value).to eq '着手'
+      click_button '着手'
+      # TODO
+      sleep(1)
+      expect(find(:test, 'update-state').value).to eq '完了'
+    end
   end
 end

@@ -30,7 +30,7 @@ class Task < ApplicationRecord
     when 'done'
       new_state = 'not_started'
     end
-    update(state: new_state)
+    update_attribute('state', new_state)
   end
 
   def save_tag(tag_list)
